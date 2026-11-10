@@ -1,0 +1,478 @@
+{
+  "_comment": "EXAMPLE DATA — materials generated from math_grade4_extract.json, including visual flashcards. See also visual_fractions.json.",
+  "teachBack": {
+    "prompt_for_child": "Pretend you are the teacher: in two or three sentences, teach me what the numerator and denominator mean, and how to compare two fractions that have the same denominator.",
+    "must_cover": [
+      "The denominator is how many equal parts make a whole",
+      "The numerator is how many parts you have",
+      "When denominators are the same, the larger numerator is the greater fraction"
+    ],
+    "example_good_answer": "The bottom number is the denominator, and it tells how many equal parts make a whole. The top number is the numerator, and it tells how many parts you have. If the denominators are the same, the fraction with the bigger numerator is greater.",
+    "visual_prompt": {
+      "instruction": "Arrange the pictures in order to show 3/8.",
+      "mode": "arrange",
+      "tokens": [
+        {
+          "id": "t1",
+          "icon_id": "pizza",
+          "emoji": "🍕",
+          "caption": "Split into 8 equal parts",
+          "correct_slot": "step1"
+        },
+        {
+          "id": "t2",
+          "icon_id": "bar",
+          "emoji": "▮",
+          "caption": "Shade 3 parts",
+          "correct_slot": "step2"
+        },
+        {
+          "id": "t3",
+          "icon_id": "pencil",
+          "emoji": "✏️",
+          "caption": "Write 3/8",
+          "correct_slot": "step3"
+        }
+      ],
+      "slots": [
+        {
+          "id": "step1",
+          "label": "First"
+        },
+        {
+          "id": "step2",
+          "label": "Next"
+        },
+        {
+          "id": "step3",
+          "label": "Then"
+        }
+      ]
+    }
+  },
+  "flashcards": {
+    "cards": [
+      {
+        "id": "c1",
+        "front": "What does the denominator of a fraction tell you?",
+        "back": "How many equal parts make a whole.",
+        "tags": [
+          "definition"
+        ],
+        "visual": {
+          "icon_id": "bar",
+          "emoji": "▮",
+          "caption": "Bottom number: equal parts",
+          "diagram": {
+            "type": "fraction_bar",
+            "parts": 8,
+            "shaded": 0,
+            "label": "denominator"
+          }
+        }
+      },
+      {
+        "id": "c2",
+        "front": "What does the numerator of a fraction tell you?",
+        "back": "How many parts you have.",
+        "tags": [
+          "definition"
+        ],
+        "visual": {
+          "icon_id": "bar",
+          "emoji": "▮",
+          "caption": "Top number: parts you have",
+          "diagram": {
+            "type": "fraction_bar",
+            "parts": 8,
+            "shaded": 3,
+            "label": "numerator 3"
+          }
+        }
+      },
+      {
+        "id": "c3",
+        "front": "How do you read 1/4?",
+        "back": "One-fourth, or one quarter.",
+        "tags": [
+          "reading"
+        ],
+        "visual": {
+          "icon_id": "pizza",
+          "emoji": "🍕",
+          "caption": "One of four equal slices",
+          "diagram": {
+            "type": "fraction_bar",
+            "parts": 4,
+            "shaded": 1,
+            "label": "1/4"
+          }
+        }
+      },
+      {
+        "id": "c4",
+        "front": "A pizza cut into 8 slices, 3 eaten. What fraction?",
+        "back": "3/8",
+        "tags": [
+          "application"
+        ],
+        "visual": {
+          "icon_id": "pizza",
+          "emoji": "🍕",
+          "caption": "3 of 8 slices eaten",
+          "diagram": {
+            "type": "fraction_bar",
+            "parts": 8,
+            "shaded": 3,
+            "label": "3/8"
+          }
+        }
+      },
+      {
+        "id": "c5",
+        "front": "How do you compare fractions with the same denominator?",
+        "back": "The fraction with the larger numerator is greater.",
+        "tags": [
+          "concept"
+        ],
+        "visual": {
+          "icon_id": "bar",
+          "emoji": "▮",
+          "caption": "Same size parts, more shaded is greater",
+          "diagram": null
+        }
+      },
+      {
+        "id": "c6",
+        "front": "Which is greater: 2/5 or 4/5?",
+        "back": "4/5",
+        "tags": [
+          "practice"
+        ],
+        "visual": {
+          "icon_id": "bar",
+          "emoji": "▮",
+          "caption": "4/5 has more fifths than 2/5",
+          "diagram": {
+            "type": "fraction_bar",
+            "parts": 5,
+            "shaded": 4,
+            "label": "4/5"
+          }
+        }
+      },
+      {
+        "id": "c7",
+        "front": "Why must the parts be equal?",
+        "back": "If the parts are not equal, a simple fraction cannot describe each part.",
+        "tags": [
+          "concept"
+        ],
+        "visual": {
+          "icon_id": "check",
+          "emoji": "✅",
+          "caption": "Parts must be the same size",
+          "diagram": null
+        }
+      },
+      {
+        "id": "c8",
+        "front": "In 5/8, what is the numerator? The denominator?",
+        "back": "Numerator 5, denominator 8.",
+        "tags": [
+          "identify"
+        ],
+        "visual": {
+          "icon_id": "pencil",
+          "emoji": "✏️",
+          "caption": "5 on top, 8 on the bottom",
+          "diagram": null
+        }
+      },
+      {
+        "id": "c9",
+        "front": "Which is smaller: 3/10 or 7/10?",
+        "back": "3/10",
+        "tags": [
+          "practice"
+        ],
+        "visual": {
+          "icon_id": "bar",
+          "emoji": "▮",
+          "caption": "3 shaded tenths is less than 7",
+          "diagram": {
+            "type": "fraction_bar",
+            "parts": 10,
+            "shaded": 3,
+            "label": "3/10"
+          }
+        }
+      },
+      {
+        "id": "c10",
+        "front": "What should you check in a fraction picture?",
+        "back": "That every part is the same size (equal parts).",
+        "tags": [
+          "checking"
+        ],
+        "visual": {
+          "icon_id": "eye",
+          "emoji": "👀",
+          "caption": "Check that every part is equal",
+          "diagram": null
+        }
+      }
+    ]
+  },
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "mcq",
+        "prompt": "A cake is split into 6 equal pieces. What fraction is each piece?",
+        "choices": [
+          "1/6",
+          "6/1",
+          "1/5",
+          "6/6"
+        ],
+        "answer": "1/6",
+        "explanation": "Six equal parts means each piece is one-sixth.",
+        "skill_tags": [
+          "unit fraction"
+        ]
+      },
+      {
+        "id": "q2",
+        "type": "short",
+        "prompt": "What is the denominator of 7/9?",
+        "choices": [],
+        "answer": "9",
+        "explanation": "The denominator is the bottom number, 9.",
+        "skill_tags": [
+          "identify"
+        ]
+      },
+      {
+        "id": "q3",
+        "type": "pick_picture",
+        "prompt": "Which picture shows the greater fraction?",
+        "choices": [],
+        "picture_choices": [
+          {
+            "id": "a",
+            "icon_id": "bar",
+            "emoji": "▮",
+            "caption": "2/8 shaded"
+          },
+          {
+            "id": "b",
+            "icon_id": "bar",
+            "emoji": "▮",
+            "caption": "5/8 shaded"
+          },
+          {
+            "id": "c",
+            "icon_id": "bar",
+            "emoji": "▮",
+            "caption": "1/8 shaded"
+          },
+          {
+            "id": "d",
+            "icon_id": "bar",
+            "emoji": "▮",
+            "caption": "3/8 shaded"
+          }
+        ],
+        "answer": "b",
+        "explanation": "The denominators are all 8, and 5 is the largest numerator.",
+        "skill_tags": [
+          "compare"
+        ],
+        "diagrams": [
+          {
+            "id": "a",
+            "type": "fraction_bar",
+            "parts": 8,
+            "shaded": 2,
+            "label": "2/8"
+          },
+          {
+            "id": "b",
+            "type": "fraction_bar",
+            "parts": 8,
+            "shaded": 5,
+            "label": "5/8"
+          },
+          {
+            "id": "c",
+            "type": "fraction_bar",
+            "parts": 8,
+            "shaded": 1,
+            "label": "1/8"
+          },
+          {
+            "id": "d",
+            "type": "fraction_bar",
+            "parts": 8,
+            "shaded": 3,
+            "label": "3/8"
+          }
+        ]
+      },
+      {
+        "id": "q4",
+        "type": "mcq",
+        "prompt": "Which of these is NOT describing the numerator?",
+        "choices": [
+          "How many parts you have",
+          "The number on top",
+          "How many equal parts make a whole",
+          "The 3 in 3/4"
+        ],
+        "answer": "How many equal parts make a whole",
+        "explanation": "“How many equal parts make a whole” is the denominator. Watch for the word “not.”",
+        "skill_tags": [
+          "keyword",
+          "definition"
+        ]
+      },
+      {
+        "id": "q5",
+        "type": "numeric",
+        "prompt": "A whole is split into 10 equal parts and you take 4. What is the numerator?",
+        "choices": [],
+        "answer": "4",
+        "explanation": "You took 4 parts, so the numerator is 4 (the fraction is 4/10).",
+        "skill_tags": [
+          "application"
+        ]
+      }
+    ]
+  },
+  "drill": {
+    "duration_seconds": 300,
+    "items": [
+      {
+        "id": "d1",
+        "prompt": "Denominator of 1/2?",
+        "answer": "2",
+        "type": "numeric"
+      },
+      {
+        "id": "d2",
+        "prompt": "Numerator of 3/4?",
+        "answer": "3",
+        "type": "numeric"
+      },
+      {
+        "id": "d3",
+        "prompt": "Which is greater: 2/7 or 5/7?",
+        "answer": "5/7",
+        "type": "short"
+      },
+      {
+        "id": "d4",
+        "prompt": "Each piece of a whole split into 5? (A) 1/5 (B) 5/1 (C) 1/4",
+        "answer": "A",
+        "type": "mcq"
+      },
+      {
+        "id": "d5",
+        "prompt": "Which is smaller: 6/10 or 9/10?",
+        "answer": "6/10",
+        "type": "short"
+      },
+      {
+        "id": "d6",
+        "prompt": "Numerator of 8/8?",
+        "answer": "8",
+        "type": "numeric"
+      },
+      {
+        "id": "d7",
+        "prompt": "A unit fraction has numerator… (A) 0 (B) 1 (C) the denominator",
+        "answer": "B",
+        "type": "mcq"
+      },
+      {
+        "id": "d8",
+        "prompt": "Are 1/6 and 1/6 equal? (yes/no)",
+        "answer": "yes",
+        "type": "short"
+      },
+      {
+        "id": "d9",
+        "prompt": "Denominator of 4/9?",
+        "answer": "9",
+        "type": "numeric"
+      },
+      {
+        "id": "d10",
+        "prompt": "Which is greater: 3/5 or 2/5?",
+        "answer": "3/5",
+        "type": "short"
+      },
+      {
+        "id": "d11",
+        "prompt": "Pizza, 8 slices, eat 1. Fraction?",
+        "answer": "1/8",
+        "type": "short"
+      },
+      {
+        "id": "d12",
+        "prompt": "Pizza, 8 slices, eat 5. Fraction?",
+        "answer": "5/8",
+        "type": "short"
+      },
+      {
+        "id": "d13",
+        "prompt": "Is 7/7 equal to one whole? (yes/no)",
+        "answer": "yes",
+        "type": "short"
+      },
+      {
+        "id": "d14",
+        "prompt": "Is the numerator on the top or the bottom?",
+        "answer": "top",
+        "type": "short"
+      },
+      {
+        "id": "d15",
+        "prompt": "Is the denominator on the top or the bottom?",
+        "answer": "bottom",
+        "type": "short"
+      },
+      {
+        "id": "d16",
+        "prompt": "Which is smaller: 1/3 or 2/3?",
+        "answer": "1/3",
+        "type": "short"
+      },
+      {
+        "id": "d17",
+        "prompt": "Numerator of 9/10?",
+        "answer": "9",
+        "type": "numeric"
+      },
+      {
+        "id": "d18",
+        "prompt": "Same denominator: compare the (numerator/denominator)?",
+        "answer": "numerator",
+        "type": "short"
+      },
+      {
+        "id": "d19",
+        "prompt": "How do you read 2/6?",
+        "answer": "two-sixths",
+        "type": "short"
+      },
+      {
+        "id": "d20",
+        "prompt": "4 equal parts, take 3. Fraction?",
+        "answer": "3/4",
+        "type": "short"
+      }
+    ]
+  }
+}

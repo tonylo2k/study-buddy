@@ -1,0 +1,36 @@
+{
+  "_comment": "EXAMPLE DATA — Grade 4 social studies style extract (local products and community life). Not from a real photo.",
+  "subject": "social_studies",
+  "grade_hint": "Grade 4",
+  "title": "Local Products and Community Life",
+  "language": "en",
+  "key_points": [
+    "A community’s natural environment affects which products people can make or grow",
+    "Local products include farm goods, fish, and crafts, and they shape how people live and work",
+    "Better transportation lets products be sold farther away",
+    "We can learn about local products by interviewing people, observing, and looking up information"
+  ],
+  "vocabulary": [
+    {"term": "local products", "definition": "Goods a place produces, such as rice, tea, or fish"},
+    {"term": "industry", "definition": "A type of work people do to make or provide goods and services"},
+    {"term": "distribution", "definition": "Moving products to other places so they can be sold"}
+  ],
+  "worked_examples": [
+    {
+      "problem": "Why are coastal communities often known for fish and seafood?",
+      "solution_steps": [
+        "The natural environment is next to the ocean",
+        "People can fish or raise seafood nearby",
+        "So seafood becomes a common local product"
+      ],
+      "answer": "Because they live near the ocean, many people work in fishing."
+    }
+  ],
+  "practice_seeds": [
+    "Name two products that might come from a mountain community",
+    "How does better transportation change where products can be sold?",
+    "What are some ways to learn about a community’s products?"
+  ],
+  "raw_ocr_text": "(example) Local products and community life… natural environment… industry… exercises…",
+  "warnings": []
+}

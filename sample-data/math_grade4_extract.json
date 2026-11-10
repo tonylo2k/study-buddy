@@ -1,0 +1,45 @@
+{
+  "_comment": "EXAMPLE DATA — Grade 4 math style extract (intro to fractions). Not from a real photo.",
+  "subject": "math",
+  "grade_hint": "Grade 4",
+  "title": "Intro to Fractions: Unit Fractions and Comparing",
+  "language": "en",
+  "key_points": [
+    "When a whole is split into n equal parts, each part is 1/n",
+    "The numerator tells how many parts you have; the denominator tells how many equal parts make a whole",
+    "When denominators are the same, the fraction with the larger numerator is greater",
+    "You can use a picture (circle or bar) to check that the parts are equal"
+  ],
+  "vocabulary": [
+    {"term": "numerator", "definition": "The number on top of a fraction; how many parts you have"},
+    {"term": "denominator", "definition": "The number on the bottom of a fraction; how many equal parts make a whole"},
+    {"term": "unit fraction", "definition": "A fraction with 1 as the numerator, such as 1/2 or 1/4"}
+  ],
+  "worked_examples": [
+    {
+      "problem": "A pizza is cut into 8 equal slices. Mia eats 3 slices. What fraction of the pizza did she eat?",
+      "solution_steps": [
+        "The whole is split into 8 equal parts, so the denominator is 8",
+        "She ate 3 parts, so the numerator is 3",
+        "The fraction is 3/8"
+      ],
+      "answer": "3/8"
+    },
+    {
+      "problem": "Compare 2/5 and 4/5. Which is greater?",
+      "solution_steps": [
+        "The denominators are the same: both are 5",
+        "4 is greater than 2, so 4/5 is greater"
+      ],
+      "answer": "4/5"
+    }
+  ],
+  "practice_seeds": [
+    "What fraction of the figure is shaded?",
+    "Compare 1/6 and 1/3 (which unit is larger?)",
+    "Which is greater: 3/10 or 7/10?",
+    "Name the numerator and denominator of 5/8"
+  ],
+  "raw_ocr_text": "(example) Intro to fractions… A whole split into equal parts… Practice: 1. … 2. …",
+  "warnings": []
+}

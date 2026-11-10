@@ -1,0 +1,180 @@
+{
+  "_comment": "EXAMPLE DATA — visual scene spec for Weather vs Climate (Grade 4 science / social studies). Not from a real photo. Playable by VisualExplainerPlayer.",
+  "explainer_id": "ve_weather_climate",
+  "concept": "Weather vs climate",
+  "key_point_ref": 0,
+  "format": "side_by_side",
+  "duration_seconds": 48,
+  "title": "Weather vs Climate",
+  "scenes": [
+    {
+      "id": "s1",
+      "title": "Weather is today",
+      "duration_ms": 14000,
+      "caption": "Weather is what the sky is doing today. It can change hour by hour.",
+      "layout": "split",
+      "elements": [
+        {
+          "id": "panel_weather",
+          "kind": "label",
+          "label": "Weather",
+          "slot": "left",
+          "order": 0,
+          "color": "sky"
+        },
+        {
+          "id": "sky_morning",
+          "kind": "icon",
+          "icon_id": "sun",
+          "emoji": "☀️",
+          "label": "Morning: sunny",
+          "slot": "left",
+          "order": 1,
+          "color": "gold"
+        },
+        {
+          "id": "sky_noon",
+          "kind": "icon",
+          "icon_id": "cloud",
+          "emoji": "☁️",
+          "label": "Midday: cloudy",
+          "slot": "left",
+          "order": 1,
+          "color": "gray"
+        },
+        {
+          "id": "sky_afternoon",
+          "kind": "icon",
+          "icon_id": "rain",
+          "emoji": "🌧️",
+          "label": "Afternoon: rainy",
+          "slot": "left",
+          "order": 1,
+          "color": "blue"
+        },
+        {
+          "id": "clock",
+          "kind": "icon",
+          "icon_id": "clock",
+          "emoji": "⏰",
+          "label": "Hour by hour",
+          "slot": "left",
+          "order": 2
+        }
+      ],
+      "steps": [
+        {"at_ms": 0, "action": "show", "targets": ["panel_weather", "clock", "sky_morning"], "with": null, "motion": "fade"},
+        {"at_ms": 4500, "action": "replace", "targets": ["sky_morning"], "with": "sky_noon", "motion": "fade"},
+        {"at_ms": 9000, "action": "replace", "targets": ["sky_noon"], "with": "sky_afternoon", "motion": "fade"}
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "Climate is the usual pattern",
+      "duration_ms": 14000,
+      "caption": "Climate is the usual pattern over a long time, like a year of seasons cycling.",
+      "layout": "split",
+      "elements": [
+        {
+          "id": "panel_climate",
+          "kind": "label",
+          "label": "Climate",
+          "slot": "right",
+          "order": 0,
+          "color": "green"
+        },
+        {
+          "id": "season_spring",
+          "kind": "icon",
+          "icon_id": "spring",
+          "emoji": "🌸",
+          "label": "Spring",
+          "slot": "right",
+          "order": 1
+        },
+        {
+          "id": "season_summer",
+          "kind": "icon",
+          "icon_id": "summer",
+          "emoji": "☀️",
+          "label": "Summer",
+          "slot": "right",
+          "order": 1
+        },
+        {
+          "id": "season_fall",
+          "kind": "icon",
+          "icon_id": "fall",
+          "emoji": "🍂",
+          "label": "Fall",
+          "slot": "right",
+          "order": 1
+        },
+        {
+          "id": "season_winter",
+          "kind": "icon",
+          "icon_id": "winter",
+          "emoji": "❄️",
+          "label": "Winter",
+          "slot": "right",
+          "order": 1
+        },
+        {
+          "id": "calendar",
+          "kind": "icon",
+          "icon_id": "calendar",
+          "emoji": "📅",
+          "label": "A whole year",
+          "slot": "right",
+          "order": 2
+        }
+      ],
+      "steps": [
+        {"at_ms": 0, "action": "show", "targets": ["panel_climate", "calendar", "season_spring"], "with": null, "motion": "fade"},
+        {"at_ms": 3000, "action": "replace", "targets": ["season_spring"], "with": "season_summer", "motion": "fade"},
+        {"at_ms": 6000, "action": "replace", "targets": ["season_summer"], "with": "season_fall", "motion": "fade"},
+        {"at_ms": 9000, "action": "replace", "targets": ["season_fall"], "with": "season_winter", "motion": "fade"}
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "See them together",
+      "duration_ms": 12000,
+      "caption": "Weather is today. Climate is the usual pattern over many years.",
+      "layout": "split",
+      "elements": [
+        {"id": "left_title", "kind": "label", "label": "Weather: today", "slot": "left", "order": 0},
+        {"id": "left_icon", "kind": "icon", "icon_id": "cloud_sun", "emoji": "🌤️", "label": "The sky right now", "slot": "left", "order": 1},
+        {"id": "right_title", "kind": "label", "label": "Climate: the usual year", "slot": "right", "order": 0},
+        {"id": "right_icon", "kind": "icon", "icon_id": "calendar", "emoji": "📅", "label": "Seasons that return", "slot": "right", "order": 1}
+      ],
+      "steps": [
+        {"at_ms": 0, "action": "show", "targets": ["left_title", "left_icon"], "with": null, "motion": "slide"},
+        {"at_ms": 2500, "action": "show", "targets": ["right_title", "right_icon"], "with": null, "motion": "slide"}
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "Which is which?",
+      "duration_ms": 8000,
+      "caption": "Raining this afternoon is weather. Warm summers every year is climate.",
+      "layout": "row",
+      "elements": [
+        {"id": "ex_rain", "kind": "icon", "icon_id": "rain", "emoji": "🌧️", "label": "Raining this afternoon", "slot": "left", "order": 1},
+        {"id": "tag_weather", "kind": "label", "label": "Weather", "slot": "left", "order": 2},
+        {"id": "ex_summer", "kind": "icon", "icon_id": "summer", "emoji": "☀️", "label": "Warm summers every year", "slot": "right", "order": 1},
+        {"id": "tag_climate", "kind": "label", "label": "Climate", "slot": "right", "order": 2}
+      ],
+      "steps": [
+        {"at_ms": 0, "action": "show", "targets": ["ex_rain", "ex_summer"], "with": null, "motion": "fade"},
+        {"at_ms": 3000, "action": "show", "targets": ["tag_weather", "tag_climate"], "with": null, "motion": "grow"}
+      ]
+    }
+  ],
+  "narration_captions": [
+    {"scene_id": "s1", "text": "Weather is what the sky is doing today. It can change hour by hour."},
+    {"scene_id": "s2", "text": "Climate is the usual pattern over a long time, like a year of seasons cycling."},
+    {"scene_id": "s3", "text": "Weather is today. Climate is the usual pattern over many years."},
+    {"scene_id": "s4", "text": "Raining this afternoon is weather. Warm summers every year is climate."}
+  ]
+}

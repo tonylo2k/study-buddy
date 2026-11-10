@@ -1,0 +1,119 @@
+{
+  "_comment": "EXAMPLE DATA — visual scene spec for Grade 4 math (intro to fractions), matching math_grade4_extract.json. Not from a real photo.",
+  "explainer_id": "ve_fractions_intro",
+  "concept": "Numerators, denominators, and comparing with like denominators",
+  "key_point_ref": 0,
+  "format": "fraction_bar",
+  "duration_seconds": 50,
+  "title": "Seeing 3/8 on a bar and a number line",
+  "scenes": [
+    {
+      "id": "s1",
+      "title": "Equal parts",
+      "duration_ms": 12000,
+      "caption": "A whole is split into 8 equal parts. Each part is 1/8.",
+      "layout": "single",
+      "elements": [
+        {
+          "id": "bar8",
+          "kind": "fraction_bar",
+          "label": "One whole",
+          "parts": 8,
+          "shaded": 0,
+          "color": "sky"
+        },
+        {
+          "id": "pizza",
+          "kind": "icon",
+          "icon_id": "pizza",
+          "emoji": "🍕",
+          "label": "8 equal slices",
+          "order": 2
+        }
+      ],
+      "steps": [
+        {"at_ms": 0, "action": "show", "targets": ["pizza", "bar8"], "with": null, "motion": "fade"}
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "Shade three parts",
+      "duration_ms": 14000,
+      "caption": "We shade 3 of the 8 parts. The denominator is 8. The numerator is 3. That is 3/8.",
+      "layout": "single",
+      "elements": [
+        {
+          "id": "bar8_shaded",
+          "kind": "fraction_bar",
+          "label": "3/8",
+          "parts": 8,
+          "shaded": 3,
+          "color": "gold"
+        }
+      ],
+      "steps": [
+        {"at_ms": 0, "action": "show", "targets": ["bar8_shaded"], "with": null, "motion": "fade"},
+        {"at_ms": 2000, "action": "shade", "targets": ["bar8_shaded"], "with": null, "motion": "grow"}
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "The same fraction on a number line",
+      "duration_ms": 12000,
+      "caption": "On a number line from 0 to 1, 3/8 is three hops of 1/8.",
+      "layout": "single",
+      "elements": [
+        {
+          "id": "line",
+          "kind": "number_line",
+          "label": "0 to 1",
+          "parts": 8,
+          "shaded": 3,
+          "color": "navy"
+        }
+      ],
+      "steps": [
+        {"at_ms": 0, "action": "show", "targets": ["line"], "with": null, "motion": "fade"},
+        {"at_ms": 2500, "action": "hop", "targets": ["line"], "with": null, "motion": "slide"}
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "Same denominator, compare",
+      "duration_ms": 12000,
+      "caption": "2/5 and 4/5 have the same denominator. 4/5 has more parts, so it is greater.",
+      "layout": "stack",
+      "elements": [
+        {
+          "id": "bar_2_5",
+          "kind": "fraction_bar",
+          "label": "2/5",
+          "parts": 5,
+          "shaded": 2,
+          "order": 1,
+          "color": "sky"
+        },
+        {
+          "id": "bar_4_5",
+          "kind": "fraction_bar",
+          "label": "4/5",
+          "parts": 5,
+          "shaded": 4,
+          "order": 2,
+          "color": "gold"
+        }
+      ],
+      "steps": [
+        {"at_ms": 0, "action": "show", "targets": ["bar_2_5"], "with": null, "motion": "fade"},
+        {"at_ms": 4000, "action": "show", "targets": ["bar_4_5"], "with": null, "motion": "fade"},
+        {"at_ms": 8000, "action": "highlight", "targets": ["bar_4_5"], "with": null, "motion": "grow"}
+      ]
+    }
+  ],
+  "narration_captions": [
+    {"scene_id": "s1", "text": "A whole is split into 8 equal parts. Each part is one-eighth."},
+    {"scene_id": "s2", "text": "We shade three of the eight parts. The denominator is 8. The numerator is 3. That is three-eighths."},
+    {"scene_id": "s3", "text": "On a number line from 0 to 1, three-eighths is three hops of one-eighth."},
+    {"scene_id": "s4", "text": "Two-fifths and four-fifths have the same denominator. Four-fifths has more parts, so it is greater."}
+  ]
+}

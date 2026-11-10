@@ -1,0 +1,412 @@
+{
+  "_comment": "EXAMPLE DATA — materials generated from social_grade4_extract.json, including visual flashcards. See also visual_local_products.json.",
+  "teachBack": {
+    "prompt_for_child": "In two or three sentences, be the teacher: how does the natural environment affect a community’s products, and why can those products be sold farther away when transportation improves?",
+    "must_cover": [
+      "The natural environment affects which products a community has",
+      "Products are connected to how people live and work",
+      "Transportation helps move products to distant markets"
+    ],
+    "example_good_answer": "If a community is near mountains or the ocean, people can grow or catch different products. Those products shape the jobs people do. When roads or trains get better, the goods can be sent to cities farther away and sold there.",
+    "visual_prompt": {
+      "instruction": "Sort the pictures into Environment, Products, or Distribution.",
+      "mode": "arrange",
+      "tokens": [
+        {
+          "id": "t1",
+          "icon_id": "mountain",
+          "emoji": "⛰️",
+          "caption": "Mountains and coast",
+          "correct_slot": "environment"
+        },
+        {
+          "id": "t2",
+          "icon_id": "fish",
+          "emoji": "🐟",
+          "caption": "Fish and timber",
+          "correct_slot": "products"
+        },
+        {
+          "id": "t3",
+          "icon_id": "truck",
+          "emoji": "🚚",
+          "caption": "Goods on the road to a city",
+          "correct_slot": "distribution"
+        }
+      ],
+      "slots": [
+        {
+          "id": "environment",
+          "label": "Environment"
+        },
+        {
+          "id": "products",
+          "label": "Products"
+        },
+        {
+          "id": "distribution",
+          "label": "Distribution"
+        }
+      ]
+    }
+  },
+  "flashcards": {
+    "cards": [
+      {
+        "id": "c1",
+        "front": "What are local products?",
+        "back": "Goods a place produces, such as rice, tea, or fish.",
+        "tags": [
+          "vocabulary"
+        ],
+        "visual": {
+          "icon_id": "fish",
+          "emoji": "🐟",
+          "caption": "Goods a place produces",
+          "diagram": null
+        }
+      },
+      {
+        "id": "c2",
+        "front": "How does the natural environment affect products?",
+        "back": "Land and climate help decide what people can grow or make.",
+        "tags": [
+          "concept"
+        ],
+        "visual": {
+          "icon_id": "mountain",
+          "emoji": "⛰️",
+          "caption": "Land and climate shape products",
+          "diagram": null
+        }
+      },
+      {
+        "id": "c3",
+        "front": "What products are common in a coastal community?",
+        "back": "Fish and other seafood.",
+        "tags": [
+          "example"
+        ],
+        "visual": {
+          "icon_id": "ocean",
+          "emoji": "🌊",
+          "caption": "Coast: fish and seafood",
+          "diagram": null
+        }
+      },
+      {
+        "id": "c4",
+        "front": "What does distribution mean?",
+        "back": "Moving products to other places so they can be sold.",
+        "tags": [
+          "vocabulary"
+        ],
+        "visual": {
+          "icon_id": "truck",
+          "emoji": "🚚",
+          "caption": "Moving goods to sell them",
+          "diagram": null
+        }
+      },
+      {
+        "id": "c5",
+        "front": "How does better transportation change sales?",
+        "back": "Products can be sold in markets farther away.",
+        "tags": [
+          "cause-effect"
+        ],
+        "visual": {
+          "icon_id": "road",
+          "emoji": "🛣️",
+          "caption": "Better roads, farther markets",
+          "diagram": null
+        }
+      },
+      {
+        "id": "c6",
+        "front": "Ways to learn about local products?",
+        "back": "Interview people, observe, and look up information.",
+        "tags": [
+          "methods"
+        ],
+        "visual": {
+          "icon_id": "person",
+          "emoji": "👤",
+          "caption": "Interview, observe, look it up",
+          "diagram": null
+        }
+      },
+      {
+        "id": "c7",
+        "front": "How are products connected to daily life?",
+        "back": "They shape the work people do and everyday life.",
+        "tags": [
+          "concept"
+        ],
+        "visual": {
+          "icon_id": "house",
+          "emoji": "🏠",
+          "caption": "Products shape daily work",
+          "diagram": null
+        }
+      },
+      {
+        "id": "c8",
+        "front": "What is an industry?",
+        "back": "A type of work people do to make or provide goods and services.",
+        "tags": [
+          "vocabulary"
+        ],
+        "visual": {
+          "icon_id": "city",
+          "emoji": "🏙️",
+          "caption": "A type of work people do",
+          "diagram": null
+        }
+      }
+    ]
+  },
+  "quiz": {
+    "questions": [
+      {
+        "id": "q1",
+        "type": "pick_picture",
+        "prompt": "Which picture best shows a local product?",
+        "choices": [],
+        "picture_choices": [
+          {
+            "id": "a",
+            "icon_id": "fish",
+            "emoji": "🐟",
+            "caption": "Fish caught nearby"
+          },
+          {
+            "id": "b",
+            "icon_id": "cloud",
+            "emoji": "☁️",
+            "caption": "A weather forecast"
+          },
+          {
+            "id": "c",
+            "icon_id": "pencil",
+            "emoji": "✏️",
+            "caption": "School homework"
+          },
+          {
+            "id": "d",
+            "icon_id": "question",
+            "emoji": "❓",
+            "caption": "A faraway import only"
+          }
+        ],
+        "answer": "a",
+        "explanation": "Local products are things made or grown in that place.",
+        "skill_tags": [
+          "vocabulary"
+        ]
+      },
+      {
+        "id": "q2",
+        "type": "short",
+        "prompt": "Name one way to learn about a community’s products.",
+        "choices": [],
+        "answer": "Interview people (or observe, or look up information)",
+        "explanation": "Interviews, observation, and research all work.",
+        "skill_tags": [
+          "methods"
+        ]
+      },
+      {
+        "id": "q3",
+        "type": "drag_match",
+        "prompt": "Match each picture to what it shows.",
+        "choices": [],
+        "match_left": [
+          {
+            "id": "l1",
+            "icon_id": "truck",
+            "emoji": "🚚",
+            "caption": "Goods traveling to a far city"
+          },
+          {
+            "id": "l2",
+            "icon_id": "ocean",
+            "emoji": "🌊",
+            "caption": "A harbor community"
+          }
+        ],
+        "match_right": [
+          {
+            "id": "distribution",
+            "label": "Distribution / farther sales"
+          },
+          {
+            "id": "environment",
+            "label": "Natural environment"
+          }
+        ],
+        "answer_map": {
+          "l1": "distribution",
+          "l2": "environment"
+        },
+        "answer": "",
+        "explanation": "Better transportation helps distribution. The coast is part of the natural environment.",
+        "skill_tags": [
+          "cause-effect"
+        ]
+      },
+      {
+        "id": "q4",
+        "type": "mcq",
+        "prompt": "Which of these is NOT a main idea of this lesson?",
+        "choices": [
+          "The environment affects products",
+          "Products are tied to how people live",
+          "Memorize every world capital",
+          "You can learn by interviewing and observing"
+        ],
+        "answer": "Memorize every world capital",
+        "explanation": "The question says “not.” Pick the idea that does not belong in this lesson.",
+        "skill_tags": [
+          "keyword"
+        ]
+      },
+      {
+        "id": "q5",
+        "type": "short",
+        "prompt": "Why might a mountain community be known for tea or timber? (short answer)",
+        "choices": [],
+        "answer": "Because the natural environment (hills / climate) is a good fit for growing or producing those things",
+        "explanation": "Products often match the local environment.",
+        "skill_tags": [
+          "inference"
+        ]
+      }
+    ]
+  },
+  "drill": {
+    "duration_seconds": 300,
+    "items": [
+      {
+        "id": "d1",
+        "prompt": "Local products = goods a place (produces / imports)?",
+        "answer": "produces",
+        "type": "short"
+      },
+      {
+        "id": "d2",
+        "prompt": "Coastal communities often have (seafood / deserts)?",
+        "answer": "seafood",
+        "type": "short"
+      },
+      {
+        "id": "d3",
+        "prompt": "Distribution means moving products to (sell / throw away)?",
+        "answer": "sell",
+        "type": "short"
+      },
+      {
+        "id": "d4",
+        "prompt": "Better transportation can reach (nearer / farther) markets?",
+        "answer": "farther",
+        "type": "short"
+      },
+      {
+        "id": "d5",
+        "prompt": "A useful way to learn: (A) interview (B) ignore",
+        "answer": "A",
+        "type": "mcq"
+      },
+      {
+        "id": "d6",
+        "prompt": "Industry is connected to people’s (work / star signs)?",
+        "answer": "work",
+        "type": "short"
+      },
+      {
+        "id": "d7",
+        "prompt": "The natural environment can affect (products / video-game levels)?",
+        "answer": "products",
+        "type": "short"
+      },
+      {
+        "id": "d8",
+        "prompt": "Looking up information is a way to learn? (yes/no)",
+        "answer": "yes",
+        "type": "short"
+      },
+      {
+        "id": "d9",
+        "prompt": "Are farm goods a kind of local product? (yes/no)",
+        "answer": "yes",
+        "type": "short"
+      },
+      {
+        "id": "d10",
+        "prompt": "Can crafts be local products too? (yes/no)",
+        "answer": "yes",
+        "type": "short"
+      },
+      {
+        "id": "d11",
+        "prompt": "Which is NOT affected by the local environment? (A) types of products (B) the moon’s phases",
+        "answer": "B",
+        "type": "mcq"
+      },
+      {
+        "id": "d12",
+        "prompt": "Can observing a market show local products? (yes/no)",
+        "answer": "yes",
+        "type": "short"
+      },
+      {
+        "id": "d13",
+        "prompt": "Distribution needs (transportation / invisibility)?",
+        "answer": "transportation",
+        "type": "short"
+      },
+      {
+        "id": "d14",
+        "prompt": "Can you learn about a community by interviewing people? (yes/no)",
+        "answer": "yes",
+        "type": "short"
+      },
+      {
+        "id": "d15",
+        "prompt": "Are local products only about other countries? (yes/no)",
+        "answer": "no",
+        "type": "short"
+      },
+      {
+        "id": "d16",
+        "prompt": "A mountain area is more likely to have (tea or timber / deep-sea fish)?",
+        "answer": "tea or timber",
+        "type": "short"
+      },
+      {
+        "id": "d17",
+        "prompt": "Daily life and products are (related / unrelated)?",
+        "answer": "related",
+        "type": "short"
+      },
+      {
+        "id": "d18",
+        "prompt": "Is industry a type of work? (yes/no)",
+        "answer": "yes",
+        "type": "short"
+      },
+      {
+        "id": "d19",
+        "prompt": "Shipping fish to a city to sell = distribution? (yes/no)",
+        "answer": "yes",
+        "type": "short"
+      },
+      {
+        "id": "d20",
+        "prompt": "Does this lesson include the natural environment? (yes/no)",
+        "answer": "yes",
+        "type": "short"
+      }
+    ]
+  }
+}

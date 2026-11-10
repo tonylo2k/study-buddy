@@ -1,0 +1,103 @@
+{
+  "_comment": "EXAMPLE DATA — visual scene spec for Local Products and Community Life, matching social_grade4_extract.json. Not from a real photo.",
+  "explainer_id": "ve_local_products",
+  "concept": "Local products, environment, and distribution",
+  "key_point_ref": 0,
+  "format": "map",
+  "duration_seconds": 46,
+  "title": "How a place shapes what people make and sell",
+  "scenes": [
+    {
+      "id": "s1",
+      "title": "A simple map",
+      "duration_ms": 10000,
+      "caption": "A community’s land and water affect what people can grow, catch, or make.",
+      "layout": "split",
+      "elements": [
+        {
+          "id": "region_mountain",
+          "kind": "map_region",
+          "icon_id": "mountain",
+          "emoji": "⛰️",
+          "label": "Mountains",
+          "slot": "left",
+          "order": 1,
+          "color": "green"
+        },
+        {
+          "id": "region_ocean",
+          "kind": "map_region",
+          "icon_id": "ocean",
+          "emoji": "🌊",
+          "label": "Coast",
+          "slot": "right",
+          "order": 1,
+          "color": "sky"
+        }
+      ],
+      "steps": [
+        {"at_ms": 0, "action": "show", "targets": ["region_mountain"], "with": null, "motion": "fade"},
+        {"at_ms": 3000, "action": "show", "targets": ["region_ocean"], "with": null, "motion": "fade"}
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "Products match the place",
+      "duration_ms": 12000,
+      "caption": "Mountains may have trees or tea. The coast is often known for fish.",
+      "layout": "split",
+      "elements": [
+        {"id": "mtn", "kind": "icon", "icon_id": "mountain", "emoji": "⛰️", "label": "Mountains", "slot": "left", "order": 1},
+        {"id": "tree", "kind": "icon", "icon_id": "tree", "emoji": "🌳", "label": "Timber or tea", "slot": "left", "order": 2},
+        {"id": "sea", "kind": "icon", "icon_id": "ocean", "emoji": "🌊", "label": "Coast", "slot": "right", "order": 1},
+        {"id": "fish", "kind": "icon", "icon_id": "fish", "emoji": "🐟", "label": "Fish", "slot": "right", "order": 2}
+      ],
+      "steps": [
+        {"at_ms": 0, "action": "show", "targets": ["mtn", "sea"], "with": null, "motion": "fade"},
+        {"at_ms": 4000, "action": "show", "targets": ["tree", "fish"], "with": null, "motion": "grow"}
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "Distribution",
+      "duration_ms": 14000,
+      "caption": "Better roads let products travel farther. Fish can be sold in a city inland.",
+      "layout": "row",
+      "elements": [
+        {"id": "start_sea", "kind": "icon", "icon_id": "ocean", "emoji": "🌊", "label": "Harbor", "slot": "left", "order": 1},
+        {"id": "truck", "kind": "icon", "icon_id": "truck", "emoji": "🚚", "label": "On the road", "order": 2},
+        {"id": "road", "kind": "icon", "icon_id": "road", "emoji": "🛣️", "label": "Transportation", "order": 3},
+        {"id": "end_city", "kind": "icon", "icon_id": "city", "emoji": "🏙️", "label": "City market", "slot": "right", "order": 4},
+        {"id": "arrow1", "kind": "arrow", "icon_id": "arrow", "emoji": "➡️", "label": "Sold farther away", "order": 5}
+      ],
+      "steps": [
+        {"at_ms": 0, "action": "show", "targets": ["start_sea"], "with": null, "motion": "fade"},
+        {"at_ms": 3500, "action": "show", "targets": ["road", "truck", "arrow1"], "with": null, "motion": "slide"},
+        {"at_ms": 8000, "action": "show", "targets": ["end_city"], "with": null, "motion": "fade"}
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "How we learn",
+      "duration_ms": 10000,
+      "caption": "We can learn about local products by interviewing people, observing, and looking up information.",
+      "layout": "row",
+      "elements": [
+        {"id": "interview", "kind": "icon", "icon_id": "person", "emoji": "👤", "label": "Interview", "order": 1},
+        {"id": "observe", "kind": "icon", "icon_id": "eye", "emoji": "👀", "label": "Observe", "order": 2},
+        {"id": "research", "kind": "icon", "icon_id": "house", "emoji": "🏠", "label": "Look it up", "order": 3}
+      ],
+      "steps": [
+        {"at_ms": 0, "action": "show", "targets": ["interview"], "with": null, "motion": "fade"},
+        {"at_ms": 3000, "action": "show", "targets": ["observe"], "with": null, "motion": "fade"},
+        {"at_ms": 6000, "action": "show", "targets": ["research"], "with": null, "motion": "fade"}
+      ]
+    }
+  ],
+  "narration_captions": [
+    {"scene_id": "s1", "text": "A community’s land and water affect what people can grow, catch, or make."},
+    {"scene_id": "s2", "text": "Mountains may have trees or tea. The coast is often known for fish."},
+    {"scene_id": "s3", "text": "Better roads let products travel farther. Fish can be sold in a city inland."},
+    {"scene_id": "s4", "text": "We can learn about local products by interviewing people, observing, and looking up information."}
+  ]
+}
