@@ -53,7 +53,7 @@ function VoicePicker({ chosen }: { chosen?: string }) {
         </button>
       )}
       <p className="mt-2 text-xs text-soft">
-        Want better ones? On iPhone or iPad, download an “Enhanced” or “Premium” English voice in the device’s Accessibility settings (Spoken Content → Voices). On Android, update or
+        Want better ones? On iPhone or iPad, download an “Enhanced” or “Premium” English voice in Settings → Accessibility → Read &amp; Speak → Voices (called Spoken Content on older iOS; or search Settings for “Voices”). On Android, update or
         install Google’s speech services. New voices show up here after reopening the app.
       </p>
     </div>
