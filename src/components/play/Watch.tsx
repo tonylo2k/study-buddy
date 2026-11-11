@@ -53,6 +53,7 @@ export default function Watch({ pack, settings }: { pack: LessonPack; settings: 
         reducedMotionSetting={settings.reducedMotion}
         defaultSpeed={settings.explainerSpeed}
         ttsEnabled={settings.ttsEnabled}
+        voiceURI={settings.ttsVoiceURI}
         onFinished={onFinished}
       />
       {done && (

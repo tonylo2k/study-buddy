@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Loading, PageHeader } from "@/components/ui";
 import { apiFetch, getPasscode, setPasscode } from "@/lib/api";
 import { deleteAllData, saveSettings, useSettings } from "@/lib/db";
+import { pickVoice, speakText, useEnglishVoices, voiceQuality } from "@/lib/voice";
 
 function Toggle({ label, hint, checked, onChange }: { label: string; hint?: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -13,6 +14,49 @@ function Toggle({ label, hint, checked, onChange }: { label: string; hint?: stri
       </span>
       <input type="checkbox" role="switch" className="h-7 w-7 shrink-0 accent-[#4F8F80]" checked={checked} onChange={(e) => onChange(e.target.checked)} />
     </label>
+  );
+}
+
+const SAMPLE_LINE = "Weather is what the sky is doing today. It can change hour by hour.";
+
+function VoicePicker({ chosen }: { chosen?: string }) {
+  const voices = useEnglishVoices();
+  const [showAll, setShowAll] = useState(false);
+  if (voices.length === 0) return <p className="py-3 text-sm text-soft">This browser has no read-aloud voices to choose from.</p>;
+  const auto = pickVoice("");
+  const shown = showAll ? voices : voices.slice(0, 6);
+  const row = (key: string, uri: string, name: string, note: string) => {
+    const on = (chosen ?? "") === uri;
+    return (
+      <li key={key} className={`flex items-center gap-2 rounded-2xl border-2 p-2 ${on ? "border-sage bg-sage-light" : "border-line bg-white"}`}>
+        <button type="button" role="radio" aria-checked={on} onClick={() => saveSettings({ ttsVoiceURI: uri })} className="min-h-[44px] flex-1 text-left">
+          <span className="block font-bold">{name}</span>
+          <span className="block text-xs text-soft">{note}</span>
+        </button>
+        <button type="button" className="btn-secondary !min-h-[44px] !px-3 !py-2 text-sm" onClick={() => speakText(SAMPLE_LINE, { voiceURI: uri })} aria-label={`Play a sample of ${name}`}>
+          ▶ Play
+        </button>
+      </li>
+    );
+  };
+  return (
+    <div className="py-3">
+      <p className="font-bold">Choose a voice</p>
+      <p className="text-sm text-soft">These are the English voices on this device. Tap Play to hear each one, then tap its name to use it.</p>
+      <ul role="radiogroup" aria-label="Read-aloud voice" className="mt-2 space-y-2">
+        {row("auto", "", "Automatic", auto ? `Uses the best one found: ${auto.name}` : "Uses the device default")}
+        {shown.map((v) => row(v.voiceURI, v.voiceURI, v.name, `${voiceQuality(v)} · ${v.lang}`))}
+      </ul>
+      {voices.length > 6 && (
+        <button type="button" className="btn-quiet mt-1" onClick={() => setShowAll((s) => !s)}>
+          {showAll ? "Show fewer" : `Show all ${voices.length} voices`}
+        </button>
+      )}
+      <p className="mt-2 text-xs text-soft">
+        Want better ones? On iPhone or iPad, download an “Enhanced” or “Premium” English voice in the device’s Accessibility settings (Spoken Content → Voices). On Android, update or
+        install Google’s speech services. New voices show up here after reopening the app.
+      </p>
+    </div>
   );
 }
 
@@ -99,6 +143,7 @@ export default function SettingsPage() {
           </div>
         </div>
         <Toggle label="Narration voice" hint="Reads the captions aloud with this device’s built-in voice. Captions are always on screen either way." checked={settings.ttsEnabled} onChange={(v) => saveSettings({ ttsEnabled: v })} />
+        {settings.ttsEnabled && <VoicePicker chosen={settings.ttsVoiceURI} />}
         <Toggle label="Keep a small photo thumbnail" hint="Off by default. The full photo is never stored; it is only sent once to read the page." checked={settings.keepPhotosLocal} onChange={(v) => saveSettings({ keepPhotosLocal: v })} />
       </section>
 

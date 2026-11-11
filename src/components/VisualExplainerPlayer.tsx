@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Pause, Play, RotateCcw, Volume2, VolumeX } f
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { saveSettings } from "@/lib/db";
 import { captionFor } from "@/lib/scene";
+import { speakText } from "@/lib/voice";
 import type { VisualExplainer } from "@/lib/types";
 import VisualSceneRenderer from "./VisualSceneRenderer";
 
@@ -22,18 +23,14 @@ export function usePrefersReducedMotion(): boolean {
 }
 
 /** Optional read-aloud of the narration captions using the browser's own voice. */
-function useSpeechNarration(enabled: boolean) {
+function useSpeechNarration(enabled: boolean, voiceURI?: string) {
   const supported = typeof window !== "undefined" && "speechSynthesis" in window;
   const speak = useCallback(
     (text: string, rate: number) => {
       if (!enabled || !supported || !text) return;
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "en-US";
-      u.rate = Math.max(0.7, Math.min(1.2, 0.9 * rate));
-      window.speechSynthesis.speak(u);
+      speakText(text, { voiceURI, rate: 0.92 * rate });
     },
-    [enabled, supported],
+    [enabled, supported, voiceURI],
   );
   const stop = useCallback(() => {
     if (supported) window.speechSynthesis.cancel();
@@ -96,12 +93,14 @@ export default function VisualExplainerPlayer({
   reducedMotionSetting,
   defaultSpeed = 1,
   ttsEnabled = false,
+  voiceURI,
   onFinished,
 }: {
   explainer: VisualExplainer;
   reducedMotionSetting: boolean;
   defaultSpeed?: Speed;
   ttsEnabled?: boolean;
+  voiceURI?: string;
   onFinished?: (r: PlayerResult) => void;
 }) {
   const osReduced = usePrefersReducedMotion();
@@ -117,7 +116,7 @@ export default function VisualExplainerPlayer({
   const [finished, setFinished] = useState(false);
   const startedAt = useRef<number | null>(null);
   const reported = useRef(false);
-  const { speak, stop, supported: ttsSupported } = useSpeechNarration(tts);
+  const { speak, stop, supported: ttsSupported } = useSpeechNarration(tts, voiceURI);
 
   // Refs let the animation frame loop read the latest values without restarting.
   const live = useRef({ index, t, speed });

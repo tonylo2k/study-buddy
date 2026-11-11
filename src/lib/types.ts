@@ -170,6 +170,8 @@ export interface Settings {
   reducedMotion: boolean;
   explainerSpeed: 0.5 | 1 | 1.5;
   ttsEnabled: boolean;
+  /** voiceURI of the chosen read-aloud voice; empty = pick the best one on this device. */
+  ttsVoiceURI?: string;
 }
 
 export interface Review {
