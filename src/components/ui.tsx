@@ -37,7 +37,7 @@ export const ACTIVITY_ICON: Record<string, LucideIcon> = { watch: MonitorPlay, t
 /** Compact header for activity screens: back button, small lesson name, big title. */
 export function ActivityHeader({ back, eyebrow, title }: { back: string; eyebrow?: string; title: string }) {
   return (
-    <header className="mb-4 flex items-center gap-3">
+    <header className="mx-auto mb-4 flex max-w-xl items-center gap-3 lg:max-w-none">
       <Link href={back} aria-label="Back" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-line bg-white text-ink lg:h-12 lg:w-12">
         <ChevronLeft size={22} strokeWidth={2.4} />
       </Link>
@@ -94,12 +94,14 @@ export function SoftRing({ fraction, size = 56, label }: { fraction: number; siz
 }
 
 /** Tiny inline diagram used on flashcards and picture choices. */
-export function MiniDiagram({ diagram, width = 220 }: { diagram: Diagram; width?: number }) {
+/** `fluid` lets the drawing grow to fill its container instead of stopping at `width`. */
+export function MiniDiagram({ diagram, width = 220, fluid = false }: { diagram: Diagram; width?: number; fluid?: boolean }) {
+  const max = fluid ? "100%" : width;
   if (diagram.type === "fraction_bar") {
     const parts = Math.max(1, Math.min(24, diagram.parts));
     const pw = (width - 4) / parts;
     return (
-      <svg viewBox={`0 0 ${width} 54`} width="100%" style={{ maxWidth: width }} role="img" aria-label={`${diagram.shaded} of ${parts} parts shaded${diagram.label ? `, ${diagram.label}` : ""}`}>
+      <svg viewBox={`0 0 ${width} 54`} width="100%" style={{ maxWidth: max }} role="img" aria-label={`${diagram.shaded} of ${parts} parts shaded${diagram.label ? `, ${diagram.label}` : ""}`}>
         {Array.from({ length: parts }, (_, i) => (
           <rect key={i} x={2 + i * pw} y={2} width={pw} height={30} fill={i < diagram.shaded ? "#F2C66D" : "#fff"} stroke="#D9A53A" strokeWidth={1.5} />
         ))}
@@ -114,7 +116,7 @@ export function MiniDiagram({ diagram, width = 220 }: { diagram: Diagram; width?
   const marks = diagram.marks?.length ? diagram.marks : [String(diagram.min ?? 0), String(diagram.max ?? 1)];
   const step = (width - 30) / Math.max(1, marks.length - 1);
   return (
-    <svg viewBox={`0 0 ${width} 54`} width="100%" style={{ maxWidth: width }} role="img" aria-label={`Number line${diagram.highlight ? ` showing ${diagram.highlight}` : ""}`}>
+    <svg viewBox={`0 0 ${width} 54`} width="100%" style={{ maxWidth: max }} role="img" aria-label={`Number line${diagram.highlight ? ` showing ${diagram.highlight}` : ""}`}>
       <line x1={15} y1={18} x2={width - 15} y2={18} stroke="#2B3A4A" strokeWidth={2} strokeLinecap="round" />
       {marks.map((m, i) => (
         <g key={i}>

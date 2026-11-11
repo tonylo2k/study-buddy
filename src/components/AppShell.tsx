@@ -28,7 +28,8 @@ function Mark({ size = 36 }: { size?: number }) {
 export default function AppShell({ children }: { children: ReactNode }) {
   const path = usePathname() || "/";
   const immersive = path.startsWith("/activity") || path.startsWith("/test");
-  const wide = path === "/" || path.startsWith("/activity");
+  // Snap and the lesson hub read best as a single column; everything else may use the width.
+  const wide = !(path.startsWith("/snap") || path.startsWith("/pack"));
   const full = !immersive; // full side menu allowed (only applies at lg and up)
 
   return (

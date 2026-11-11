@@ -17,7 +17,7 @@ export function ChoiceList({
   correct?: string;
 }) {
   return (
-    <div className="grid gap-2" role="radiogroup">
+    <div className="grid gap-2.5 lg:gap-3" role="radiogroup">
       {choices.map((c) => {
         const on = value === c;
         const showRight = locked && correct !== undefined && c === correct;
@@ -29,7 +29,7 @@ export function ChoiceList({
             aria-checked={on}
             disabled={locked}
             onClick={() => onPick(c)}
-            className={`min-h-[52px] rounded-2xl border-2 px-4 py-3 text-left text-base font-semibold ${
+            className={`min-h-[60px] rounded-[20px] border-2 px-5 py-3 text-left text-[17px] font-extrabold leading-snug lg:min-h-[68px] lg:text-[19px] ${
               showRight ? "border-sage bg-sage-light" : on ? "border-sage bg-sage-light" : "border-line bg-white"
             } ${locked && on && !showRight ? "!border-gold !bg-gold-light" : ""}`}
           >
@@ -70,11 +70,17 @@ export function PictureChoices({
             aria-checked={on}
             disabled={locked}
             onClick={() => onPick(c.id)}
-            className={`flex min-h-[7.5rem] flex-col items-center justify-center gap-2 rounded-2xl border-2 p-3 text-center text-sm font-semibold ${
+            className={`flex min-h-[9.5rem] flex-col items-center justify-center gap-2.5 rounded-[22px] border-2 p-3 text-center text-[15px] font-extrabold leading-tight lg:min-h-[12rem] lg:text-[17px] ${
               showRight ? "border-sage bg-sage-light" : on ? "border-sage bg-sage-light" : "border-line bg-white"
             } ${locked && on && !showRight ? "!border-gold !bg-gold-light" : ""}`}
           >
-            {d ? <MiniDiagram diagram={d} width={130} /> : <IconView iconId={c.icon_id} emoji={c.emoji} label={c.caption} size={48} />}
+            {d ? (
+              <MiniDiagram diagram={d} width={150} />
+            ) : (
+              <span className={`flex h-[72px] w-[72px] items-center justify-center rounded-full lg:h-24 lg:w-24 ${on || showRight ? "bg-white" : "bg-cream"}`}>
+                <IconView iconId={c.icon_id} emoji={c.emoji} label={c.caption} size={44} />
+              </span>
+            )}
             <span>{c.caption}</span>
           </button>
         );
@@ -100,7 +106,7 @@ export function TextAnswer({
 }) {
   return (
     <input
-      className="field text-lg"
+      className="field !min-h-[60px] !text-xl lg:!text-2xl"
       value={value}
       disabled={disabled}
       autoFocus={autoFocus}

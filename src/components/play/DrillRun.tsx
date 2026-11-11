@@ -88,18 +88,18 @@ export default function DrillRun({ pack }: { pack: LessonPack }) {
 
   if (phase === "ready") {
     return (
-      <div className="card space-y-3 text-center">
+      <div className="card mx-auto max-w-xl space-y-3 text-center">
         <div className="flex justify-center">
           <IconTile icon={Zap} size={72} />
         </div>
-        <h2 className="text-xl font-extrabold">Speed practice</h2>
-        <p className="text-soft">Five calm minutes of quick questions. Go at a steady pace. There is no rush.</p>
+        <h2 className="text-2xl font-black">Speed practice</h2>
+        <p className="font-semibold text-soft">Five calm minutes of quick questions. Go at a steady pace. There is no rush.</p>
         {previous?.best != null && (
           <p className="chip mx-auto">
             Last time: {previous.last} · Your best: {previous.best}
           </p>
         )}
-        <button className="btn-primary w-full" onClick={start}>
+        <button className="btn-primary !min-h-[60px] w-full !text-[19px]" onClick={start}>
           Start
         </button>
       </div>
@@ -115,7 +115,7 @@ export default function DrillRun({ pack }: { pack: LessonPack }) {
           ? `You answered ${score} correctly. That is a new best for you (it was ${best}).`
           : `You answered ${score} correctly. Your best is ${best}.`;
     return (
-      <div className="space-y-4">
+      <div className="mx-auto max-w-xl space-y-4 lg:max-w-3xl">
         <DoneCard icon={Zap} title={elapsed >= duration ? "Time’s up — great work today!" : "Nice steady practice!"} lines={[line]}>
           <Link className="btn-primary" href="/">
             Back to Today
@@ -123,7 +123,7 @@ export default function DrillRun({ pack }: { pack: LessonPack }) {
         </DoneCard>
         {misses.length > 0 && (
           <section className="space-y-3">
-            <h3 className="font-bold">A few to look at again (tagging is optional)</h3>
+            <h3 className="text-lg font-black">A few to look at again (tagging is optional)</h3>
             {misses.slice(0, 5).map(({ item: m, given }) => (
               <div key={m.id} className="card space-y-2">
                 <p className="text-sm font-semibold">{m.prompt}</p>
@@ -139,40 +139,62 @@ export default function DrillRun({ pack }: { pack: LessonPack }) {
     );
   }
 
+  const best = previous?.best ?? null;
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="mx-auto flex max-w-xl flex-col gap-4 lg:max-w-none lg:flex-row lg:gap-6">
+      {/* Phone: a slim status row. Wide screens use the side panel instead. */}
+      <div className="flex items-center justify-between lg:hidden">
         <div className="flex items-center gap-3">
           <SoftRing fraction={elapsed / duration} label="Session time" />
-          <span className="text-sm text-soft">Steady pace</span>
+          <span className="text-sm font-bold text-soft">Steady pace</span>
         </div>
-        <span className="chip">Correct: {score}</span>
+        <span className="chip !px-4 !py-1.5 !text-sm">Correct: {score}</span>
       </div>
-      <div className="card min-h-[7rem]">
-        <p className="text-xl font-bold leading-snug">{inline ? inline.stem : item.prompt}</p>
-      </div>
-      {inline ? (
-        <div className="grid gap-2">
-          {inline.options.map((o) => (
-            <button key={o.key} className="btn-secondary justify-start text-left" onClick={() => answer(o.key)}>
-              <span className="chip">{o.key}</span> {o.text}
+
+      <div className="flex min-w-0 flex-1 flex-col gap-4">
+        <section className="flex min-h-[9rem] items-center rounded-[28px] bg-ink px-5 py-6 text-white lg:min-h-[15rem] lg:rounded-[36px] lg:px-10">
+          <p data-testid="drill-prompt" className="text-2xl font-black leading-snug [text-wrap:pretty] lg:text-[40px] lg:leading-tight">
+            {inline ? inline.stem : item.prompt}
+          </p>
+        </section>
+        {inline ? (
+          <div className="grid gap-2.5 lg:grid-cols-2 lg:gap-3">
+            {inline.options.map((o) => (
+              <button key={o.key} className="btn-secondary !min-h-[60px] justify-start text-left lg:!min-h-[72px] lg:!text-[19px]" onClick={() => answer(o.key)}>
+                <span className="chip !text-sm">{o.key}</span> {o.text}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="flex gap-2.5">
+            <TextAnswer key={n} value={value} onChange={setValue} numeric={item.type === "numeric"} onEnter={() => answer(value)} autoFocus />
+            <button className="btn-primary !min-h-[60px] px-7 !text-[19px]" disabled={!value.trim()} onClick={() => answer(value)}>
+              OK
             </button>
-          ))}
-        </div>
-      ) : (
-        <div className="flex gap-2">
-          <TextAnswer key={n} value={value} onChange={setValue} numeric={item.type === "numeric"} onEnter={() => answer(value)} autoFocus />
-          <button className="btn-primary" disabled={!value.trim()} onClick={() => answer(value)}>
-            OK
-          </button>
-        </div>
-      )}
-      <p className="min-h-[1.5rem] text-center text-sm text-soft" aria-live="polite">
-        {lastLine}
-      </p>
-      <button className="btn-quiet w-full" onClick={finish}>
-        Finish for today
-      </button>
+          </div>
+        )}
+        <p className="min-h-[1.5rem] text-center text-[15px] font-bold text-soft lg:text-left" aria-live="polite">
+          {lastLine}
+        </p>
+        <button className="btn-quiet w-full lg:hidden" onClick={finish}>
+          Finish for today
+        </button>
+      </div>
+
+      <aside className="hidden w-[276px] shrink-0 flex-col gap-4 lg:flex">
+        <section className="card flex flex-col items-center gap-3 text-center">
+          <SoftRing fraction={elapsed / duration} size={120} label="Session time" />
+          <p className="text-[15px] font-bold text-soft">Steady pace. No rush.</p>
+        </section>
+        <section className="card flex flex-col gap-1">
+          <p className="text-sm font-extrabold uppercase tracking-wider text-soft">Correct so far</p>
+          <p className="text-[44px] font-black leading-none text-sage-dark">{score}</p>
+          {best !== null && <p className="text-[15px] font-bold text-soft">Your best: {best}</p>}
+        </section>
+        <button className="btn-secondary w-full" onClick={finish}>
+          Finish for today
+        </button>
+      </aside>
     </div>
   );
 }

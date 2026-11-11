@@ -63,7 +63,7 @@ export default function MistakeTagger({
   return (
     <div className="space-y-2 rounded-2xl bg-cream p-3">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-sm font-bold text-ink">What happened on this one?</p>
+        <p className="text-[15px] font-extrabold text-ink">What happened on this one?</p>
         {context && hintState !== "none" && !hint && (
           <button type="button" onClick={suggest} disabled={hintState === "loading"} className="btn-quiet !min-h-0 !py-1 text-xs">
             {hintState === "loading" ? "Thinking…" : "Give me a hint"}
@@ -76,7 +76,7 @@ export default function MistakeTagger({
             key={h.id}
             type="button"
             onClick={() => tag(h.id)}
-            className={`flex min-h-[52px] items-center gap-2 rounded-xl border-2 bg-white px-2 py-2 text-left text-xs font-semibold leading-tight text-ink ${hint === h.id ? "border-sage ring-2 ring-sage-light" : "border-line"}`}
+            className={`flex min-h-[52px] items-center gap-2 rounded-xl border-2 bg-white px-2 py-2 text-left text-[13px] font-bold leading-tight text-ink ${hint === h.id ? "border-sage ring-2 ring-sage-light" : "border-line"}`}
           >
             <IconView iconId={h.icon_id} emoji={h.emoji} label={h.label} size={24} className="shrink-0" />
             <span>{h.label}</span>

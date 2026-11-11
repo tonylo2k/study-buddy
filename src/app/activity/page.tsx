@@ -39,10 +39,8 @@ function ActivityInner() {
       </div>
     );
 
-  // Watch and Teach use the whole screen on a tablet; the others stay a comfortable reading width.
-  const fullWidth = kind === "watch" || kind === "teach";
   return (
-    <div className={fullWidth ? "" : "mx-auto max-w-xl"}>
+    <div>
       <ActivityHeader back={`/pack?id=${pack.id}`} eyebrow={pack.title} title={TITLES[kind]} />
       {kind === "watch" && <Watch pack={pack} settings={settings} />}
       {kind === "teach" && <Teach pack={pack} />}

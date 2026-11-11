@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { Loading, PageHeader } from "@/components/ui";
 import { db, deletePack, useAttempts, useMistakes, usePacks, usePracticeTests } from "@/lib/db";
 import { IconView } from "@/lib/icons";
@@ -18,6 +19,15 @@ const TYPE_LABEL: Record<Attempt["type"], string> = {
   drill: "Speed practice",
   practice_test: "Practice test",
 };
+
+function Flag({ on, yes, no }: { on: boolean; yes: string; no: string }) {
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-extrabold ${on ? "bg-sage-light text-sage-dark" : "bg-sand text-soft"}`}>
+      {on && <Check size={12} strokeWidth={3.5} aria-hidden />}
+      {on ? yes : no}
+    </span>
+  );
+}
 
 export default function ParentPage() {
   const packs = usePacks();
@@ -52,150 +62,155 @@ export default function ParentPage() {
     <div className="space-y-6">
       <PageHeader title="Parent dashboard" sub="Everything here is stored on this device only." />
 
-      <section className="card space-y-2">
-        <h2 className="font-bold">Today</h2>
-        <p className="text-sm text-soft">
-          {due.length} review{due.length === 1 ? "" : "s"} due · {minutesPracticedToday(attempts)} min practiced today
-        </p>
-        {plan.length > 0 ? (
-          <ul className="space-y-1 text-sm">
-            {plan.map((s) => (
-              <li key={s.key} className="flex gap-2">
-                <span aria-hidden>{s.done ? "✅" : "▫️"}</span>
-                <span>
-                  {s.label} <span className="text-soft">· {s.packTitle} · {s.minutes} min</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-soft">No plan yet. Add a lesson to get started.</p>
-        )}
-        <div className="grid grid-cols-2 gap-2 pt-1">
-          <Link href="/snap" className="btn-primary">
-            Snap a lesson
-          </Link>
-          <Link href="/test?new=1" className="btn-secondary">
-            Generate practice test
-          </Link>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
+        <div className="flex min-w-0 flex-col gap-6">
+          <section className="card space-y-2">
+            <h2 className="text-lg font-black">Today</h2>
+            <p className="text-sm text-soft">
+              {due.length} review{due.length === 1 ? "" : "s"} due · {minutesPracticedToday(attempts)} min practiced today
+            </p>
+            {plan.length > 0 ? (
+              <ul className="space-y-1 text-sm">
+                {plan.map((s) => (
+                  <li key={s.key} className="flex gap-2">
+                    <span aria-hidden className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${s.done ? "bg-sage text-white" : "border-2 border-[#D8D2C6]"}`}>{s.done && <Check size={12} strokeWidth={3.5} />}</span>
+                    <span>
+                      {s.label} <span className="text-soft">· {s.packTitle} · {s.minutes} min</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-soft">No plan yet. Add a lesson to get started.</p>
+            )}
+            <div className="grid grid-cols-1 gap-2 pt-1 sm:grid-cols-2">
+              <Link href="/snap" className="btn-primary">
+                Snap a lesson
+              </Link>
+              <Link href="/test?new=1" className="btn-secondary">
+                Generate practice test
+              </Link>
+            </div>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-lg font-black">Lesson packs</h2>
+            {packs.length === 0 && <p className="text-sm text-soft">None yet.</p>}
+            <ul className="space-y-2">
+              {packs.map((p) => {
+                const nd = nextDue(p);
+                return (
+                  <li key={p.id} className="card !p-3">
+                    <div className="flex items-start gap-3">
+                      {p.photoThumbnail && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={p.photoThumbnail} alt="" className="h-12 w-12 rounded-xl object-cover" />
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <Link href={`/pack?id=${p.id}`} className="font-bold underline-offset-4 hover:underline">
+                          {p.title}
+                        </Link>
+                        <div className="mt-1 flex flex-wrap gap-2 text-xs text-soft">
+                          <span className="chip">{SUBJECT_LABEL[p.subject]}</span>
+                          <span className={`chip ${p.visualExplainers.length ? "" : "!bg-gold-light !text-ink"}`}>
+                            {p.visualExplainers.length ? `${p.visualExplainers.length} explainer${p.visualExplainers.length === 1 ? "" : "s"}` : "No explainers yet"}
+                          </span>
+                          <span className="self-center">
+                            Added {new Date(p.createdAt).toLocaleDateString()} · {nd ? `review ${friendlyDay(nd)}` : "reviews done"}
+                          </span>
+                        </div>
+                      </div>
+                      {confirmDelete === p.id ? (
+                        <div className="flex flex-col gap-1">
+                          <button className="btn-quiet !min-h-0 !py-1 !text-ink" onClick={() => deletePack(p.id).then(() => setConfirmDelete(null))}>
+                            Yes, delete
+                          </button>
+                          <button className="btn-quiet !min-h-0 !py-1" onClick={() => setConfirmDelete(null)}>
+                            Keep
+                          </button>
+                        </div>
+                      ) : (
+                        <button className="btn-quiet !min-h-0 !py-1" onClick={() => setConfirmDelete(p.id)}>
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
         </div>
-      </section>
+        <div className="flex min-w-0 flex-col gap-6">
+          <section className="card space-y-3">
+            <h2 className="text-lg font-black">Mistake types (last 30 days)</h2>
+            {totalMistakes === 0 ? (
+              <p className="text-sm text-soft">Nothing tagged yet. Tags appear after she marks what happened on a missed question.</p>
+            ) : (
+              <ul className="space-y-2">
+                {counts.map(({ habit, count }) => (
+                  <li key={habit.id} className="flex items-center gap-2">
+                    <IconView iconId={habit.icon_id} emoji={habit.emoji} label={habit.label} size={22} className="shrink-0" />
+                    <span className="w-40 shrink-0 text-xs font-semibold leading-tight">{habit.label}</span>
+                    <span className="h-4 flex-1 overflow-hidden rounded-full bg-cream">
+                      <span className="block h-full rounded-full bg-sage/70" style={{ width: `${(count / max) * 100}%` }} />
+                    </span>
+                    <span className="w-6 text-right text-sm font-bold tabular-nums">{count}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
 
-      <section className="space-y-2">
-        <h2 className="font-bold">Lesson packs</h2>
-        {packs.length === 0 && <p className="text-sm text-soft">None yet.</p>}
-        <ul className="space-y-2">
-          {packs.map((p) => {
-            const nd = nextDue(p);
-            return (
-              <li key={p.id} className="card !p-3">
-                <div className="flex items-start gap-3">
-                  {p.photoThumbnail && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.photoThumbnail} alt="" className="h-12 w-12 rounded-xl object-cover" />
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <Link href={`/pack?id=${p.id}`} className="font-bold underline-offset-4 hover:underline">
-                      {p.title}
-                    </Link>
-                    <div className="mt-1 flex flex-wrap gap-2 text-xs text-soft">
-                      <span className="chip">{SUBJECT_LABEL[p.subject]}</span>
-                      <span className={`chip ${p.visualExplainers.length ? "" : "!bg-gold-light !text-ink"}`}>
-                        {p.visualExplainers.length ? `${p.visualExplainers.length} explainer${p.visualExplainers.length === 1 ? "" : "s"}` : "No explainers yet"}
-                      </span>
-                      <span className="self-center">
-                        Added {new Date(p.createdAt).toLocaleDateString()} · {nd ? `review ${friendlyDay(nd)}` : "reviews done"}
-                      </span>
-                    </div>
-                  </div>
-                  {confirmDelete === p.id ? (
-                    <div className="flex flex-col gap-1">
-                      <button className="btn-quiet !min-h-0 !py-1 !text-ink" onClick={() => deletePack(p.id).then(() => setConfirmDelete(null))}>
-                        Yes, delete
-                      </button>
-                      <button className="btn-quiet !min-h-0 !py-1" onClick={() => setConfirmDelete(null)}>
-                        Keep
-                      </button>
-                    </div>
-                  ) : (
-                    <button className="btn-quiet !min-h-0 !py-1" onClick={() => setConfirmDelete(p.id)}>
-                      Delete
-                    </button>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+          <section className="card space-y-2">
+            <h2 className="text-lg font-black">Practice tests</h2>
+            {testAttempts.length === 0 ? (
+              <p className="text-sm text-soft">No practice tests taken yet.</p>
+            ) : (
+              <ul className="space-y-2 text-sm">
+                {testAttempts.map((a) => (
+                  <li key={a.id} className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <span className="font-semibold">{new Date(a.startedAt).toLocaleDateString()}</span>
+                    <Flag on={!!a.processFlags?.usedChecklist} yes="Used checklist" no="Checklist not used" />
+                    <Flag on={!!a.processFlags?.finishedCheckPhase} yes="Finished checking" no="Checking cut short" />
+                    <span className="text-soft">
+                      {String(a.payload.score)} of {String(a.payload.total)} right
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
 
-      <section className="card space-y-3">
-        <h2 className="font-bold">Mistake types (last 30 days)</h2>
-        {totalMistakes === 0 ? (
-          <p className="text-sm text-soft">Nothing tagged yet. Tags appear after she marks what happened on a missed question.</p>
-        ) : (
-          <ul className="space-y-2">
-            {counts.map(({ habit, count }) => (
-              <li key={habit.id} className="flex items-center gap-2">
-                <IconView iconId={habit.icon_id} emoji={habit.emoji} label={habit.label} size={22} className="shrink-0" />
-                <span className="w-40 shrink-0 text-xs font-semibold leading-tight">{habit.label}</span>
-                <span className="h-4 flex-1 overflow-hidden rounded-full bg-cream">
-                  <span className="block h-full rounded-full bg-sage/70" style={{ width: `${(count / max) * 100}%` }} />
-                </span>
-                <span className="w-6 text-right text-sm font-bold tabular-nums">{count}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+          <section className="card space-y-2">
+            <h2 className="text-lg font-black">Recent sessions</h2>
+            {attempts.length === 0 ? (
+              <p className="text-sm text-soft">No practice yet.</p>
+            ) : (
+              <ul className="space-y-1 text-sm">
+                {attempts.slice(0, 10).map((a) => (
+                  <li key={a.id} className="flex justify-between gap-3">
+                    <span className="min-w-0 truncate">
+                      {TYPE_LABEL[a.type]}
+                      {a.packId && <span className="text-soft"> · {titleOf(a.packId)}</span>}
+                      {a.type === "quiz" && <span className="text-soft"> · {String(a.payload.score)}/{String(a.payload.total)}</span>}
+                      {a.type === "drill" && <span className="text-soft"> · {String(a.payload.score)} correct</span>}
+                    </span>
+                    <span className="shrink-0 text-soft">{new Date(a.startedAt).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
+      </div>
 
-      <section className="card space-y-2">
-        <h2 className="font-bold">Practice tests</h2>
-        {testAttempts.length === 0 ? (
-          <p className="text-sm text-soft">No practice tests taken yet.</p>
-        ) : (
-          <ul className="space-y-2 text-sm">
-            {testAttempts.map((a) => (
-              <li key={a.id} className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span className="font-semibold">{new Date(a.startedAt).toLocaleDateString()}</span>
-                <span>{a.processFlags?.usedChecklist ? "✅ used checklist" : "▫️ checklist not used"}</span>
-                <span>{a.processFlags?.finishedCheckPhase ? "✅ finished checking" : "▫️ checking cut short"}</span>
-                <span className="text-soft">
-                  {String(a.payload.score)} of {String(a.payload.total)} right
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section className="card space-y-2">
-        <h2 className="font-bold">Recent sessions</h2>
-        {attempts.length === 0 ? (
-          <p className="text-sm text-soft">No practice yet.</p>
-        ) : (
-          <ul className="space-y-1 text-sm">
-            {attempts.slice(0, 10).map((a) => (
-              <li key={a.id} className="flex justify-between gap-3">
-                <span className="min-w-0 truncate">
-                  {TYPE_LABEL[a.type]}
-                  {a.packId && <span className="text-soft"> · {titleOf(a.packId)}</span>}
-                  {a.type === "quiz" && <span className="text-soft"> · {String(a.payload.score)}/{String(a.payload.total)}</span>}
-                  {a.type === "drill" && <span className="text-soft"> · {String(a.payload.score)} correct</span>}
-                </span>
-                <span className="shrink-0 text-soft">{new Date(a.startedAt).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <Link href="/parent/settings" className="btn-secondary w-full">
+      <Link href="/parent/settings" className="btn-secondary w-full lg:w-auto lg:self-start lg:px-10">
         Settings
       </Link>
 
-      <section className="rounded-3xl border-2 border-dashed border-line p-4">
-        <h2 className="font-bold">Developer tools</h2>
+      <section className="rounded-[28px] border-2 border-dashed border-line p-5 lg:max-w-xl">
+        <h2 className="text-lg font-black">Developer tools</h2>
         <p className="text-sm text-soft">For trying the app without a photo or an API key.</p>
         <div className="mt-2 flex flex-col gap-2">
           <button

@@ -1,5 +1,5 @@
 "use client";
-import { Pencil } from "lucide-react";
+import { Check, Pencil } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { isCorrect } from "@/lib/answers";
@@ -101,21 +101,44 @@ export default function QuizRun({ pack }: { pack: LessonPack }) {
     locked && q.type === "drag_match" ? Object.fromEntries((q.match_left ?? []).map((l) => [l.id, matches[l.id] === q.answer_map?.[l.id]])) : undefined;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between text-sm text-soft">
-        <span>
-          Question {i + 1} of {questions.length}
-        </span>
-        <span className="flex gap-1" aria-hidden>
-          {questions.map((_, n) => (
-            <span key={n} className={`h-2 w-6 rounded-full ${n < i ? "bg-sage" : n === i ? "bg-sage/50" : "bg-line"}`} />
-          ))}
-        </span>
-      </div>
-      <div className="card">
-        <p className="text-lg font-bold leading-snug">{q.prompt}</p>
+    <div className="mx-auto flex max-w-xl flex-col gap-4 lg:max-w-none lg:flex-row lg:gap-6">
+      <div className="flex flex-col gap-4 lg:w-[372px] lg:shrink-0">
+        <section className="flex flex-col gap-3 rounded-[28px] bg-ink px-5 py-[18px] text-white lg:rounded-[32px] lg:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[13px] font-extrabold uppercase tracking-wider text-gold lg:text-sm">
+              Question {i + 1} of {questions.length}
+            </p>
+            <span className="flex gap-1" aria-hidden>
+              {questions.map((_, n) => (
+                <span key={n} className={`h-2 w-5 rounded-full ${n < i ? "bg-white" : n === i ? "bg-gold" : "bg-white/25"}`} />
+              ))}
+            </span>
+          </div>
+          <p className="text-xl font-extrabold leading-snug [text-wrap:pretty] lg:text-[26px]">{q.prompt}</p>
+        </section>
+
+        {/* Wide screens: where she is in the quiz. No red marks; a missed one is simply "look again". */}
+        <ol className="card hidden flex-col gap-2 lg:flex" aria-label="Questions">
+          {questions.map((qq, n) => {
+            const r = results.find((x) => x.id === qq.id);
+            const current = n === i;
+            return (
+              <li key={qq.id} className={`flex min-h-[48px] items-center gap-3 rounded-2xl px-3 ${current ? "bg-sage-light" : "bg-cream"}`}>
+                <span
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-black ${
+                    r ? (r.correct ? "bg-sage text-white" : "bg-gold text-ink") : current ? "bg-white text-sage-dark" : "border-2 border-[#D8D2C6] bg-white text-soft"
+                  }`}
+                >
+                  {r?.correct ? <Check size={15} strokeWidth={3.2} aria-hidden /> : n + 1}
+                </span>
+                <span className={`text-[15px] ${current ? "font-black" : "font-bold text-soft"}`}>{r ? (r.correct ? "Got it" : "One to look at again") : current ? "This one" : "Coming up"}</span>
+              </li>
+            );
+          })}
+        </ol>
       </div>
 
+      <div className="flex min-w-0 flex-1 flex-col gap-4">
       {q.type === "mcq" && <ChoiceList choices={q.choices ?? []} value={value} onPick={setValue} locked={locked} correct={q.answer} />}
       {q.type === "pick_picture" && (
         <PictureChoices choices={q.picture_choices ?? []} diagrams={q.diagrams} value={value} onPick={setValue} locked={locked} correct={q.answer} />
@@ -128,15 +151,15 @@ export default function QuizRun({ pack }: { pack: LessonPack }) {
       )}
 
       {!locked ? (
-        <button className="btn-primary w-full" disabled={!ready} onClick={check}>
+        <button className="btn-primary !min-h-[60px] w-full !text-[19px] lg:w-auto lg:self-end lg:px-12" disabled={!ready} onClick={check}>
           Check
         </button>
       ) : (
-        <section className="space-y-3" aria-live="polite">
-          <div className={`rounded-2xl px-4 py-3 ${checked ? "bg-sage-light" : "bg-gold-light"}`}>
-            <p className="font-bold">{checked ? "Yes, that’s it." : "Not this time."}</p>
-            {!checked && <p className="mt-1 text-sm">The answer: {correctText(q)}</p>}
-            {q.explanation && <p className="mt-1 text-sm text-soft">{q.explanation}</p>}
+        <section className="flex flex-col gap-3" aria-live="polite">
+          <div className={`rounded-[22px] px-5 py-4 ${checked ? "bg-sage-light" : "bg-gold-light"}`}>
+            <p className="text-lg font-black">{checked ? "Yes, that’s it." : "Not this time."}</p>
+            {!checked && <p className="mt-1 text-[15px] font-bold">The answer: {correctText(q)}</p>}
+            {q.explanation && <p className="mt-1 text-[15px] font-semibold text-soft">{q.explanation}</p>}
           </div>
           {!checked && (
             <MistakeTagger
@@ -152,11 +175,12 @@ export default function QuizRun({ pack }: { pack: LessonPack }) {
               My answer means the same thing
             </button>
           )}
-          <button className="btn-primary w-full" onClick={next}>
+          <button className="btn-primary !min-h-[60px] w-full !text-[19px] lg:w-auto lg:self-end lg:px-12" onClick={next}>
             {i + 1 < questions.length ? "Next question" : "Finish"}
           </button>
         </section>
       )}
+      </div>
     </div>
   );
 }

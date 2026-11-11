@@ -15,7 +15,7 @@ export default function PracticePage() {
   return (
     <div className="space-y-4">
       <PageHeader title="Lessons" sub="Pick a lesson, or take this week’s practice test." />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 lg:max-w-xl">
         <Link href="/snap" className="btn-secondary">
           <Camera size={20} /> Snap a lesson
         </Link>
@@ -28,7 +28,7 @@ export default function PracticePage() {
           <p>Lessons appear here after you snap a page.</p>
         </EmptyState>
       ) : (
-        <ul className="grid gap-3">
+        <ul className="grid grid-cols-1 gap-3 lg:grid-cols-2">
           {packs.map((p) => {
             const due = nextDue(p);
             return (
