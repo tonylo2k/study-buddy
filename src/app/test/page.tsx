@@ -1,4 +1,5 @@
 "use client";
+import { ClipboardCheck } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -51,7 +52,7 @@ function Builder({ onReady }: { onReady: (rec: PracticeTestRecord) => void }) {
 
   if (packs.length === 0)
     return (
-      <EmptyState emoji="📝" title="No lessons to test yet">
+      <EmptyState icon={ClipboardCheck} title="No lessons to test yet">
         <p>Practice tests are built from your recent lessons.</p>
         <Link href="/snap" className="btn-primary">
           Snap a lesson

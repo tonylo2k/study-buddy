@@ -103,6 +103,18 @@ Snap (camera/file) → compressImage() in the browser (resize, re-encode, EXIF d
 | `prompts/` | Prompt templates, used verbatim |
 | `sample-data/` | Golden examples |
 
+### One layout, three shapes
+
+`src/components/AppShell.tsx` picks the navigation by screen width:
+
+| Width | Navigation | Notes |
+|---|---|---|
+| Under 768 px (phone) | Floating tab bar at the bottom | Hidden inside an activity, so the picture gets the screen |
+| 768–1023 px (iPad upright) | Slim icon rail on the left | |
+| 1024 px and up (iPad sideways) | Full side menu | Shrinks to the rail inside an activity |
+
+Today, Watch and Teach use the extra width (right-hand column, chapter list, two panes). The other screens stay a comfortable reading width. The explainer stage uses a taller canvas on phones (`PORTRAIT` in `src/lib/scene.ts`), where the two sides of a comparison stack top and bottom.
+
 ### Visual explainers
 
 The model returns a scene-spec JSON (PRD §9.7). No image or video model is called and no media file is stored. Notes on how the renderer reads a spec:

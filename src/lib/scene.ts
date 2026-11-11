@@ -40,12 +40,29 @@ function replaceGroups(scene: Scene): Map<string, string> {
 
 const slotOf = (e: SceneElement) => (e.slot === "left" || e.slot === "right" ? e.slot : "center");
 
+export interface Canvas {
+  w: number;
+  h: number;
+}
+/** A tinted background area: the whole stage, or one side of a comparison. */
+export interface Region {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  color: string | null;
+  slot: string;
+}
+export const LANDSCAPE: Canvas = { w: CANVAS_W, h: CANVAS_H };
+/** Taller stage for phones held upright: the two sides of a comparison stack top and bottom. */
+export const PORTRAIT: Canvas = { w: 480, h: 560 };
+
 /**
- * Lay a scene out on the 800×520 canvas.
+ * Lay a scene out on a canvas.
  * staticMode (reduced motion): elements that normally take turns in one spot are
  * placed side by side instead, so the slide shows every picture at once.
  */
-export function layoutScene(scene: Scene, staticMode: boolean): Map<string, Box> {
+export function layoutSceneFull(scene: Scene, staticMode: boolean, canvas: Canvas = LANDSCAPE): { boxes: Map<string, Box>; regions: Region[] } {
   const groups = replaceGroups(scene);
   type Cell = { key: string; members: SceneElement[]; order: number; slot: string; first: number };
   const cells = new Map<string, Cell>();
@@ -65,45 +82,84 @@ export function layoutScene(scene: Scene, staticMode: boolean): Map<string, Box>
   const mode: "columns" | "row" | "stack" =
     scene.layout === "split" ? "columns" : scene.layout === "row" ? (allSlotted ? "columns" : "row") : "stack";
 
-  const padX = 24;
-  const padY = 16;
-  const innerW = CANVAS_W - padX * 2;
-  const innerH = CANVAS_H - padY * 2;
+  const W = canvas.w;
+  const H = canvas.h;
+  const portrait = H > W;
+  const padX = portrait ? 14 : 24;
+  const padY = portrait ? 16 : 20;
+  const innerW = W - padX * 2;
+  const innerH = H - padY * 2;
   const cellBox = new Map<string, Box>();
+  const regions: Region[] = [];
+  // Stack cells top to bottom. A cell that is only a word label needs less height than a picture.
+  const weight = (c: Cell) => (c.members.every((m) => m.kind === "label") ? 0.45 : 1);
+  const stackCells = (cs: Cell[], cx: number, top: number, w: number, h: number) => {
+    const total = cs.reduce((a, c) => a + weight(c), 0) || 1;
+    let y = top;
+    for (const c of cs) {
+      const ch = (h * weight(c)) / total;
+      cellBox.set(c.key, { x: cx, y: y + ch / 2, w, h: ch });
+      y += ch;
+    }
+  };
+  const colorOf = (cs: Cell[]) => cs.flatMap((c) => c.members).find((m) => m.color)?.color ?? null;
 
   if (mode === "columns") {
     const cols = (["left", "center", "right"] as const).filter((s) => list.some((c) => c.slot === s));
     const names = cols.length ? cols : (["center"] as const);
     // A split scene that only uses one side still keeps that side in its half.
-    const colCount = scene.layout === "split" && names.length === 1 && names[0] !== "center" ? 2 : names.length;
-    const colW = innerW / colCount;
-    names.forEach((name, ci) => {
-      const col = colCount === 2 && names.length === 1 ? (name === "left" ? 0 : 1) : ci;
+    // (On an upright phone the unused half would just be empty space, so it is dropped.)
+    const colCount = !portrait && scene.layout === "split" && names.length === 1 && names[0] !== "center" ? 2 : names.length;
+    // Upright phone: the sides become top and bottom bands, each as wide as the stage.
+    const bandW = portrait ? innerW : innerW / colCount;
+    const bandH = portrait ? innerH / colCount : innerH;
+    for (let i = 0; i < colCount; i++) {
+      const name = colCount === 2 && names.length === 1 ? (i === 0 ? "left" : "right") : names[i];
       const inCol = list.filter((c) => c.slot === name);
-      const rowH = innerH / inCol.length;
-      inCol.forEach((c, ri) => {
-        cellBox.set(c.key, { x: padX + colW * (col + 0.5), y: padY + rowH * (ri + 0.5), w: colW, h: rowH });
+      regions.push({
+        x: portrait ? 0 : (W / colCount) * i,
+        y: portrait ? (H / colCount) * i : 0,
+        w: portrait ? W : W / colCount,
+        h: portrait ? H / colCount : H,
+        color: colorOf(inCol),
+        slot: name,
       });
-    });
+      const x0 = portrait ? padX : padX + bandW * i;
+      const y0 = portrait ? padY + bandH * i : padY;
+      stackCells(inCol, x0 + bandW / 2, y0, bandW, bandH);
+    }
   } else if (mode === "row") {
-    const colW = innerW / list.length;
-    list.forEach((c, i) => cellBox.set(c.key, { x: padX + colW * (i + 0.5), y: CANVAS_H / 2, w: colW, h: innerH }));
+    regions.push({ x: 0, y: 0, w: W, h: H, color: colorOf(list), slot: "all" });
+    // Upright phone: a long row wraps onto two lines so nothing gets squeezed.
+    const lines = portrait && list.length > 3 ? 2 : 1;
+    const perLine = Math.ceil(list.length / lines);
+    const lineH = innerH / lines;
+    list.forEach((c, i) => {
+      const line = Math.floor(i / perLine);
+      const inLine = line === lines - 1 ? list.length - perLine * (lines - 1) : perLine;
+      const colW = innerW / inLine;
+      cellBox.set(c.key, { x: padX + colW * ((i % perLine) + 0.5), y: padY + lineH * (line + 0.5), w: colW, h: lineH });
+    });
   } else {
-    const rowH = innerH / list.length;
-    list.forEach((c, i) => cellBox.set(c.key, { x: CANVAS_W / 2, y: padY + rowH * (i + 0.5), w: innerW, h: rowH }));
+    regions.push({ x: 0, y: 0, w: W, h: H, color: colorOf(list), slot: "all" });
+    stackCells(list, W / 2, padY, innerW, innerH);
   }
 
-  const out = new Map<string, Box>();
+  const boxes = new Map<string, Box>();
   for (const c of list) {
     const box = cellBox.get(c.key)!;
     if (staticMode && c.members.length > 1) {
       const w = box.w / c.members.length;
-      c.members.forEach((m, i) => out.set(m.id, { x: box.x - box.w / 2 + w * (i + 0.5), y: box.y, w, h: box.h }));
+      c.members.forEach((m, i) => boxes.set(m.id, { x: box.x - box.w / 2 + w * (i + 0.5), y: box.y, w, h: box.h }));
     } else {
-      for (const m of c.members) out.set(m.id, box);
+      for (const m of c.members) boxes.set(m.id, box);
     }
   }
-  return out;
+  return { boxes, regions };
+}
+
+export function layoutScene(scene: Scene, staticMode: boolean, canvas: Canvas = LANDSCAPE): Map<string, Box> {
+  return layoutSceneFull(scene, staticMode, canvas).boxes;
 }
 
 export interface SceneState {

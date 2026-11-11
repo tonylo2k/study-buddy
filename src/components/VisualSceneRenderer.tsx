@@ -1,21 +1,77 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ICON_REGISTRY } from "@/lib/icons";
-import { CANVAS_H, CANVAS_W, layoutScene, sceneStateAt, wrapLabel, type Box } from "@/lib/scene";
+import { LANDSCAPE, PORTRAIT, layoutSceneFull, sceneStateAt, wrapLabel, type Box } from "@/lib/scene";
 import type { Scene, SceneElement } from "@/lib/types";
 
-const PALETTE: Record<string, { fill: string; soft: string; stroke: string }> = {
-  sky: { fill: "#8CC4E0", soft: "#E6F2F8", stroke: "#5FA5C8" },
-  blue: { fill: "#6FA8D6", soft: "#E3EEF8", stroke: "#4B8DB8" },
-  navy: { fill: "#5B6FA3", soft: "#E7EAF4", stroke: "#3F5187" },
-  gold: { fill: "#F2C66D", soft: "#FBF0D5", stroke: "#D9A53A" },
-  green: { fill: "#8FC7A3", soft: "#E3F2E8", stroke: "#5FA57A" },
-  gray: { fill: "#B5BFCA", soft: "#EEF1F4", stroke: "#8A97A6" },
-  rose: { fill: "#E9A9B8", soft: "#FAECEF", stroke: "#D98BA4" },
-  sage: { fill: "#7FB5A8", soft: "#DDEDE8", stroke: "#4F8F80" },
+const PALETTE: Record<string, { fill: string; soft: string; stroke: string; text: string }> = {
+  sky: { fill: "#8CC4E0", soft: "#DDEBF3", stroke: "#5FA5C8", text: "#2B6485" },
+  blue: { fill: "#6FA8D6", soft: "#DCE9F6", stroke: "#4B8DB8", text: "#2A5F8A" },
+  navy: { fill: "#5B6FA3", soft: "#E1E5F2", stroke: "#3F5187", text: "#3F5187" },
+  gold: { fill: "#F2C66D", soft: "#FBF0D5", stroke: "#D9A53A", text: "#7A5408" },
+  green: { fill: "#8FC7A3", soft: "#DFF0E5", stroke: "#5FA57A", text: "#2F6B45" },
+  gray: { fill: "#B5BFCA", soft: "#E9EDF1", stroke: "#8A97A6", text: "#4A5663" },
+  rose: { fill: "#E9A9B8", soft: "#F8E6EB", stroke: "#D98BA4", text: "#A8456A" },
+  sage: { fill: "#7FB5A8", soft: "#DCEBE6", stroke: "#4F8F80", text: "#2F6659" },
 };
 const pal = (c?: string | null) => PALETTE[c ?? ""] ?? PALETTE.sage;
-const INK = "#2B3A4A";
+const INK = "#22313F";
+// When a scene does not say what colour it is, stages take turns through these calm tints.
+const TINT_CYCLE = ["sky", "gold", "green", "rose"];
+
+/**
+ * Filled, friendly drawings for the pictures that show up most. Each is drawn in a
+ * 100×100 box centred on 0,0. Anything not here uses its line icon on a white disc.
+ */
+const ART: Record<string, React.ReactNode> = {
+  sun: (
+    <>
+      <circle r={25} fill="#F2C66D" />
+      <g stroke="#F2C66D" strokeWidth={7} strokeLinecap="round">
+        <path d="M0 -46v-8M0 46v8M-46 0h-8M46 0h8M-33 -33l-6 -6M33 33l6 6M33 -33l6 -6M-33 33l-6 6" transform="scale(0.86)" />
+      </g>
+    </>
+  ),
+  cloud: <path d="M-24 24a19 19 0 0 1 3-38 26 26 0 0 1 50 6 16 16 0 0 1-3 32z" fill="#FFFFFF" stroke="#B9D3E2" strokeWidth={2.5} />,
+  cloud_sun: (
+    <>
+      <circle cx={18} cy={-16} r={19} fill="#F2C66D" />
+      <g stroke="#F2C66D" strokeWidth={5} strokeLinecap="round">
+        <path d="M18 -46v6M48 -16h-6M39 -37l-4 4M-3 -37l4 4" />
+      </g>
+      <path d="M-28 30a19 19 0 0 1 3-38 26 26 0 0 1 50 6 16 16 0 0 1-3 32z" fill="#FFFFFF" stroke="#B9D3E2" strokeWidth={2.5} />
+    </>
+  ),
+  rain: (
+    <>
+      <path d="M-24 10a19 19 0 0 1 3-38 26 26 0 0 1 50 6 16 16 0 0 1-3 32z" fill="#FFFFFF" stroke="#B9D3E2" strokeWidth={2.5} />
+      <g stroke="#4B8DB8" strokeWidth={6} strokeLinecap="round">
+        <path d="M-16 24l-5 14M2 24l-5 14M20 24l-5 14" />
+      </g>
+    </>
+  ),
+  mountain: (
+    <>
+      <path d="M-48 34L-12 -32L8 4L20 -12L48 34z" fill="#8FC7A3" stroke="#5FA57A" strokeWidth={2.5} strokeLinejoin="round" />
+      <path d="M-12 -32l-10 18l10 -5l9 6z" fill="#FFFFFF" />
+    </>
+  ),
+  ocean: (
+    <g fill="none" stroke="#3F8FBF" strokeWidth={8} strokeLinecap="round">
+      <path d="M-44 -18c14 -12 30 12 44 0s30 -12 44 0" />
+      <path d="M-44 4c14 -12 30 12 44 0s30 -12 44 0" opacity={0.75} />
+      <path d="M-44 26c14 -12 30 12 44 0s30 -12 44 0" opacity={0.5} />
+    </g>
+  ),
+  tree: (
+    <>
+      <rect x={-6} y={8} width={12} height={32} rx={4} fill="#A9744A" />
+      <circle cx={0} cy={-10} r={28} fill="#8FC7A3" stroke="#5FA57A" strokeWidth={2.5} />
+    </>
+  ),
+  drop: <path d="M0 -38C18 -12 26 2 26 12a26 26 0 0 1-52 0C-26 2 -18 -12 0 -38z" fill="#8CC4E0" stroke="#5FA5C8" strokeWidth={2.5} />,
+};
+ART.summer = ART.sun;
 
 /** Pick a font size so the longest word fits the cell, then wrap. Keeps neighbours from colliding. */
 function fitLabel(text: string, width: number, ideal: number): { size: number; maxChars: number } {
@@ -39,23 +95,40 @@ function Lines({ text, y, size, maxChars, weight = 600, fill = INK, maxLines = 2
 
 /** Icon → Lucide if allowlisted, else emoji, else a labeled rounded shape. Never throws. */
 function Picture({ el, size }: { el: SceneElement; size: number }) {
+  const art = el.icon_id ? ART[el.icon_id] : undefined;
+  if (art) {
+    return (
+      <g aria-hidden transform={`scale(${size / 100})`}>
+        {art}
+      </g>
+    );
+  }
   const entry = el.icon_id ? ICON_REGISTRY[el.icon_id] : undefined;
   if (entry) {
     const { Icon } = entry;
-    const tint = el.color && PALETTE[el.color] ? PALETTE[el.color].stroke : entry.tint;
-    return <Icon x={-size / 2} y={-size / 2} width={size} height={size} color={tint} strokeWidth={1.6} aria-hidden />;
+    const tint = el.color && PALETTE[el.color] ? PALETTE[el.color].text : entry.tint;
+    const inner = size * 0.56;
+    return (
+      <g aria-hidden>
+        <circle r={size / 2} fill="#FFFFFF" />
+        <Icon x={-inner / 2} y={-inner / 2} width={inner} height={inner} color={tint} strokeWidth={2} />
+      </g>
+    );
   }
   if (el.emoji) {
     return (
-      <text textAnchor="middle" dominantBaseline="central" fontSize={size * 0.82} aria-hidden>
-        {el.emoji}
-      </text>
+      <g aria-hidden>
+        <circle r={size / 2} fill="#FFFFFF" />
+        <text textAnchor="middle" dominantBaseline="central" fontSize={size * 0.52}>
+          {el.emoji}
+        </text>
+      </g>
     );
   }
   return (
     <g aria-hidden>
-      <rect x={-size / 2} y={-size / 2} width={size} height={size} rx={16} fill="#fff" stroke="#C9D2DA" strokeWidth={2} strokeDasharray="6 5" />
-      <text textAnchor="middle" dominantBaseline="central" fontSize={size * 0.4} fill="#8A97A6">
+      <rect x={-size / 2} y={-size / 2} width={size} height={size} rx={size * 0.22} fill="#fff" stroke="#9AA6B2" strokeWidth={2} strokeDasharray="6 5" />
+      <text textAnchor="middle" dominantBaseline="central" fontSize={size * 0.4} fill="#6B7A86">
         ?
       </text>
     </g>
@@ -64,8 +137,8 @@ function Picture({ el, size }: { el: SceneElement; size: number }) {
 
 function IconEl({ el, box }: { el: SceneElement; box: Box }) {
   const hasLabel = Boolean(el.label);
-  const size = Math.max(48, Math.min(box.w * 0.5, box.h * (hasLabel ? 0.5 : 0.7), 150));
-  const fit = fitLabel(el.label || "", box.w, 25);
+  const size = Math.max(56, Math.min(box.w * 0.56, box.h * (hasLabel ? 0.56 : 0.76), 200));
+  const fit = fitLabel(el.label || "", box.w, 28);
   const labelH = hasLabel ? fit.size * 2.4 : 0;
   const cy = -labelH / 2;
   return (
@@ -86,8 +159,8 @@ function LabelEl({ el, box }: { el: SceneElement; box: Box }) {
   const h = 24 + lines.length * 31;
   return (
     <g>
-      <rect x={-w / 2} y={-h / 2} width={w} height={h} rx={h / 2 > 26 ? 22 : h / 2} fill={p.soft} stroke={p.stroke} strokeWidth={2} />
-      <Lines text={text} y={-(lines.length - 1) * 15.6 + 9} size={26} weight={700} maxChars={Math.floor((box.w - 60) / 14.5)} />
+      <rect x={-w / 2} y={-h / 2} width={w} height={h} rx={h / 2 > 28 ? 24 : h / 2} fill="#FFFFFF" />
+      <Lines text={text} y={-(lines.length - 1) * 15.6 + 9} size={26} weight={800} fill={p.text} maxChars={Math.floor((box.w - 60) / 14.5)} />
     </g>
   );
 }
@@ -172,7 +245,7 @@ function MapRegionEl({ el, box }: { el: SceneElement; box: Box }) {
   const size = Math.max(48, Math.min(w * 0.45, h * 0.4, 150));
   return (
     <g>
-      <rect x={-w / 2} y={-h / 2} width={w} height={h} rx={36} fill={p.soft} stroke={p.stroke} strokeWidth={2} />
+      <rect x={-w / 2} y={-h / 2} width={w} height={h} rx={36} fill="#FFFFFF" fillOpacity={0.7} stroke={p.stroke} strokeWidth={2} />
       <g transform="translate(0 -20)">
         <Picture el={el} size={size} />
       </g>
@@ -234,19 +307,25 @@ export default function VisualSceneRenderer({
   t,
   speed = 1,
   staticMode = false,
+  portrait = false,
+  sceneIndex = 0,
   describedBy,
 }: {
   scene: Scene;
   t: number;
   speed?: number;
   staticMode?: boolean;
+  /** Upright phone: use the taller stage. */
+  portrait?: boolean;
+  /** Position of the scene in its explainer, used to vary the background tint. */
+  sceneIndex?: number;
   describedBy?: string;
 }) {
-  const boxes = layoutScene(scene, staticMode);
+  const canvas = portrait ? PORTRAIT : LANDSCAPE;
+  const { boxes, regions } = layoutSceneFull(scene, staticMode, canvas);
   const state = sceneStateAt(scene, t, staticMode);
   // Speed scales motion, but nothing is ever quicker than a 200ms fade (no flashing).
   const dur = Math.max(0.2, 0.55 / speed);
-  const dividers = scene.layout === "split";
 
   const body = (el: SceneElement) => {
     const box = boxes.get(el.id);
@@ -261,9 +340,10 @@ export default function VisualSceneRenderer({
             width={Math.min(box.w - 20, 620)}
             height={Math.min(box.h - 8, 170)}
             rx={24}
-            fill="#FBF0D5"
-            stroke="#F2C66D"
-            strokeWidth={2}
+            fill="#FFFFFF"
+            fillOpacity={0.6}
+            stroke="#E0A526"
+            strokeWidth={3}
           />
         )}
         <ElementBody el={el} box={box} progress={state.progress.get(el.id) ?? 0} />
@@ -301,14 +381,20 @@ export default function VisualSceneRenderer({
 
   return (
     <svg
-      viewBox={`0 0 ${CANVAS_W} ${CANVAS_H}`}
-      className="block h-auto w-full select-none rounded-3xl bg-white"
+      viewBox={`0 0 ${canvas.w} ${canvas.h}`}
+      className="block h-auto w-full select-none"
+      style={{ borderRadius: 32 }}
       role="img"
       aria-label={scene.title || "Picture"}
       aria-describedby={describedBy}
     >
-      <rect x={1} y={1} width={CANVAS_W - 2} height={CANVAS_H - 2} rx={28} fill="#FFFDFA" stroke="#E6E0D6" strokeWidth={2} />
-      {dividers && <line x1={CANVAS_W / 2} y1={36} x2={CANVAS_W / 2} y2={CANVAS_H - 36} stroke="#E6E0D6" strokeWidth={2} strokeDasharray="4 10" strokeLinecap="round" />}
+      {regions.map((r, i) => {
+        // Two sides of a comparison default to sky and gold; a single stage takes turns through the calm tints.
+        const name = r.color && PALETTE[r.color] ? r.color : regions.length > 1 ? TINT_CYCLE[i % 2] : TINT_CYCLE[sceneIndex % TINT_CYCLE.length];
+        // A hairline of white between the two sides of a comparison.
+        const gap = regions.length > 1 ? 3 : 0;
+        return <rect key={i} x={r.x + (r.x > 0 ? gap : 0)} y={r.y + (r.y > 0 ? gap : 0)} width={r.w - (r.x > 0 ? gap : 0)} height={r.h - (r.y > 0 ? gap : 0)} fill={PALETTE[name].soft} />;
+      })}
       {staticMode ? visibleEls.map(body) : <AnimatePresence>{visibleEls.map(body)}</AnimatePresence>}
     </svg>
   );

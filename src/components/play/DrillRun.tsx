@@ -1,4 +1,5 @@
 "use client";
+import { Zap } from "lucide-react";
 import { useLiveQuery } from "dexie-react-hooks";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -7,7 +8,7 @@ import { db, logAttempt, uid } from "@/lib/db";
 import type { DrillItem, LessonPack } from "@/lib/types";
 import { TextAnswer } from "../AnswerInput";
 import MistakeTagger from "../MistakeTagger";
-import { DoneCard, SoftRing } from "../ui";
+import { DoneCard, IconTile, SoftRing } from "../ui";
 
 export default function DrillRun({ pack }: { pack: LessonPack }) {
   const drill = pack.drill!;
@@ -88,8 +89,8 @@ export default function DrillRun({ pack }: { pack: LessonPack }) {
   if (phase === "ready") {
     return (
       <div className="card space-y-3 text-center">
-        <div className="text-5xl" aria-hidden>
-          ⚡
+        <div className="flex justify-center">
+          <IconTile icon={Zap} size={72} />
         </div>
         <h2 className="text-xl font-extrabold">Speed practice</h2>
         <p className="text-soft">Five calm minutes of quick questions. Go at a steady pace. There is no rush.</p>
@@ -115,7 +116,7 @@ export default function DrillRun({ pack }: { pack: LessonPack }) {
           : `You answered ${score} correctly. Your best is ${best}.`;
     return (
       <div className="space-y-4">
-        <DoneCard emoji="🌤️" title={elapsed >= duration ? "Time’s up — great work today!" : "Nice steady practice!"} lines={[line]}>
+        <DoneCard icon={Zap} title={elapsed >= duration ? "Time’s up — great work today!" : "Nice steady practice!"} lines={[line]}>
           <Link className="btn-primary" href="/">
             Back to Today
           </Link>

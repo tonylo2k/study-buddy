@@ -1,4 +1,5 @@
 "use client";
+import { Check, Loader, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { generateIntoPack, PACK_KINDS, type KindStatus } from "@/lib/generate";
 import type { Extract, GenerateKind } from "@/lib/types";
@@ -39,8 +40,8 @@ export default function GeneratePanel({
           const st = status[kind];
           return (
             <li key={kind} className="flex items-start gap-3">
-              <span className="mt-0.5 w-6 text-center" aria-hidden>
-                {st.s === "done" ? "✅" : st.s === "failed" ? "🌧️" : st.s === "working" ? "⏳" : "·"}
+              <span className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${st.s === "done" ? "bg-sage text-white" : st.s === "failed" ? "bg-gold-light text-gold-deep" : "bg-sand text-soft"}`} aria-hidden>
+                {st.s === "done" ? <Check size={14} strokeWidth={3.2} /> : st.s === "failed" ? <X size={14} strokeWidth={3} /> : st.s === "working" ? <Loader size={14} className="animate-spin [animation-duration:2.5s]" /> : null}
               </span>
               <span className="flex-1">
                 <span className="font-semibold">{label}</span>

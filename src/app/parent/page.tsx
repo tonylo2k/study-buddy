@@ -73,10 +73,10 @@ export default function ParentPage() {
         )}
         <div className="grid grid-cols-2 gap-2 pt-1">
           <Link href="/snap" className="btn-primary">
-            📷 Snap a lesson
+            Snap a lesson
           </Link>
           <Link href="/test?new=1" className="btn-secondary">
-            📝 Generate practice test
+            Generate practice test
           </Link>
         </div>
       </section>
@@ -101,7 +101,7 @@ export default function ParentPage() {
                     <div className="mt-1 flex flex-wrap gap-2 text-xs text-soft">
                       <span className="chip">{SUBJECT_LABEL[p.subject]}</span>
                       <span className={`chip ${p.visualExplainers.length ? "" : "!bg-gold-light !text-ink"}`}>
-                        {p.visualExplainers.length ? `🎬 ${p.visualExplainers.length} explainer${p.visualExplainers.length === 1 ? "" : "s"}` : "No explainers yet"}
+                        {p.visualExplainers.length ? `${p.visualExplainers.length} explainer${p.visualExplainers.length === 1 ? "" : "s"}` : "No explainers yet"}
                       </span>
                       <span className="self-center">
                         Added {new Date(p.createdAt).toLocaleDateString()} · {nd ? `review ${friendlyDay(nd)}` : "reviews done"}
@@ -191,7 +191,7 @@ export default function ParentPage() {
       </section>
 
       <Link href="/parent/settings" className="btn-secondary w-full">
-        ⚙️ Settings
+        Settings
       </Link>
 
       <section className="rounded-3xl border-2 border-dashed border-line p-4">

@@ -1,4 +1,5 @@
 "use client";
+import { Layers } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { logAttempt } from "@/lib/db";
@@ -29,7 +30,7 @@ export default function Cards({ pack }: { pack: LessonPack }) {
 
   if (done) {
     return (
-      <DoneCard emoji="🃏" title="You went through every card" lines={[again > 0 ? `You gave ${again} card${again === 1 ? "" : "s"} a second look. That is exactly what second looks are for.` : "Steady work, one card at a time."]}>
+      <DoneCard icon={Layers} title="You went through every card" lines={[again > 0 ? `You gave ${again} card${again === 1 ? "" : "s"} a second look. That is exactly what second looks are for.` : "Steady work, one card at a time."]}>
         {hasActivity(pack, "quiz") && (
           <Link className="btn-primary" href={activityHref(pack.id, "quiz")}>
             Quick quiz

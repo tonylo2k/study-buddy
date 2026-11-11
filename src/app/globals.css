@@ -2,26 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body { background: #FAF7F2; color: #2B3A4A; }
+html, body { background: #F7F4EE; color: #22313F; }
 body { -webkit-tap-highlight-color: transparent; }
-:focus-visible { outline: 3px solid #4F8F80; outline-offset: 2px; border-radius: 12px; }
+:focus-visible { outline: 3px solid #3E7F70; outline-offset: 2px; border-radius: 12px; }
+
+textarea#teach-text { --ln: 40px; }
+@media (min-width: 1024px) { textarea#teach-text { --ln: 44px; } }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl bg-sage px-5 py-3 text-base font-bold text-white shadow-card transition-colors active:bg-sage-dark disabled:opacity-50;
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-[20px] bg-sage px-5 py-3 text-[17px] font-black text-white transition-colors active:bg-sage-dark disabled:opacity-50;
   }
   .btn-secondary {
-    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border-2 border-line bg-white px-5 py-3 text-base font-bold text-ink transition-colors active:bg-sage-light disabled:opacity-50;
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-[20px] border-2 border-line bg-white px-5 py-3 text-[17px] font-extrabold text-ink transition-colors active:bg-sage-light disabled:opacity-50;
   }
   .btn-quiet {
     @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-sage-dark underline-offset-4 hover:underline;
   }
-  .card { @apply rounded-3xl border border-line bg-white p-4 shadow-card; }
+  .card { @apply rounded-[28px] border border-line bg-white p-5; }
   .field {
-    @apply w-full rounded-2xl border-2 border-line bg-white px-4 py-3 text-base text-ink placeholder:text-soft/60 focus:border-sage focus:outline-none;
+    @apply w-full rounded-[20px] border-2 border-line bg-white px-4 py-3 text-[17px] font-semibold text-ink placeholder:text-soft/60 focus:border-sage focus:outline-none;
   }
   .chip { @apply inline-flex items-center gap-1 rounded-full bg-sage-light px-3 py-1 text-xs font-bold text-sage-dark; }
-  .h1 { @apply text-2xl font-extrabold tracking-tight text-ink; }
+  .h1 { @apply text-[28px] font-black leading-tight text-ink lg:text-[34px]; }
 }
 
 /* The OS setting also calms every CSS transition in the app, not only the explainers. */

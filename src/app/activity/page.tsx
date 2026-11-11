@@ -1,4 +1,5 @@
 "use client";
+import { Search } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -7,7 +8,7 @@ import DrillRun from "@/components/play/DrillRun";
 import QuizRun from "@/components/play/QuizRun";
 import Teach from "@/components/play/Teach";
 import Watch from "@/components/play/Watch";
-import { EmptyState, Loading, PageHeader } from "@/components/ui";
+import { ActivityHeader, EmptyState, Loading } from "@/components/ui";
 import { usePack, useSettings } from "@/lib/db";
 import { ACTIVITY_META, hasActivity, type ActivityKind } from "@/lib/plan";
 
@@ -29,16 +30,20 @@ function ActivityInner() {
   if (pack === undefined || !ready) return <Loading />;
   if (!pack || !(kind in ACTIVITY_META) || !hasActivity(pack, kind))
     return (
-      <EmptyState emoji="🔎" title="This part is not ready yet">
-        <Link href={pack ? `/pack?id=${pack.id}` : "/practice"} className="btn-primary">
-          Back
-        </Link>
-      </EmptyState>
+      <div className="mx-auto max-w-xl">
+        <EmptyState icon={Search} title="This part is not ready yet">
+          <Link href={pack ? `/pack?id=${pack.id}` : "/practice"} className="btn-primary">
+            Back
+          </Link>
+        </EmptyState>
+      </div>
     );
 
+  // Watch and Teach use the whole screen on a tablet; the others stay a comfortable reading width.
+  const fullWidth = kind === "watch" || kind === "teach";
   return (
-    <div>
-      <PageHeader title={TITLES[kind]} back={`/pack?id=${pack.id}`} sub={pack.title} />
+    <div className={fullWidth ? "" : "mx-auto max-w-xl"}>
+      <ActivityHeader back={`/pack?id=${pack.id}`} eyebrow={pack.title} title={TITLES[kind]} />
       {kind === "watch" && <Watch pack={pack} settings={settings} />}
       {kind === "teach" && <Teach pack={pack} />}
       {kind === "cards" && <Cards pack={pack} />}

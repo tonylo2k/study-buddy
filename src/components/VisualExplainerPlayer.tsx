@@ -1,6 +1,6 @@
 "use client";
-import { ChevronLeft, ChevronRight, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { Check, ChevronLeft, ChevronRight, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { saveSettings } from "@/lib/db";
 import { captionFor } from "@/lib/scene";
 import { speakText } from "@/lib/voice";
@@ -39,9 +39,22 @@ function useSpeechNarration(enabled: boolean, voiceURI?: string) {
   return { speak, stop, supported };
 }
 
+/** True on tablets and wider. Phones get the taller, stacked stage. */
+export function useIsWide(query = "(min-width: 768px)"): boolean {
+  const [wide, setWide] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const on = () => setWide(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, [query]);
+  return wide;
+}
+
 function CaptionBar({ id, text }: { id: string; text: string }) {
   return (
-    <p id={id} aria-live="polite" className="min-h-[4.5rem] rounded-2xl bg-sage-light px-4 py-3 text-center text-lg leading-snug text-ink">
+    <p id={id} aria-live="polite" className="min-h-[5.5rem] text-[22px] font-extrabold leading-snug text-ink [text-wrap:pretty] lg:min-h-[4.5rem] lg:text-[28px]">
       {text}
     </p>
   );
@@ -49,27 +62,17 @@ function CaptionBar({ id, text }: { id: string; text: string }) {
 
 function SpeedPicker({ speed, onChange }: { speed: Speed; onChange: (s: Speed) => void }) {
   return (
-    <div role="group" aria-label="Speed" className="flex overflow-hidden rounded-full border-2 border-line bg-white">
+    <div role="group" aria-label="Speed" className="flex h-14 shrink-0 gap-0.5 rounded-[20px] border border-line bg-white p-1">
       {SPEEDS.map((s) => (
         <button
           key={s}
           type="button"
           aria-pressed={speed === s}
           onClick={() => onChange(s)}
-          className={`min-h-[44px] px-3 text-sm font-semibold ${speed === s ? "bg-sage text-white" : "text-soft"}`}
+          className={`w-[38px] rounded-2xl text-[13px] font-extrabold md:w-[46px] md:text-sm lg:w-[52px] ${speed === s ? "bg-sage-light text-sage-dark" : "text-soft"}`}
         >
           {s}×
         </button>
-      ))}
-    </div>
-  );
-}
-
-function Dots({ count, index }: { count: number; index: number }) {
-  return (
-    <div className="flex justify-center gap-2" aria-hidden>
-      {Array.from({ length: count }, (_, i) => (
-        <span key={i} className={`h-2 rounded-full transition-all ${i === index ? "w-6 bg-sage" : i < index ? "w-2 bg-sage/60" : "w-2 bg-line"}`} />
       ))}
     </div>
   );
@@ -95,6 +98,7 @@ export default function VisualExplainerPlayer({
   ttsEnabled = false,
   voiceURI,
   onFinished,
+  aside,
 }: {
   explainer: VisualExplainer;
   reducedMotionSetting: boolean;
@@ -102,7 +106,10 @@ export default function VisualExplainerPlayer({
   ttsEnabled?: boolean;
   voiceURI?: string;
   onFinished?: (r: PlayerResult) => void;
+  /** Shown under the chapter list on wide screens (for example "Next: Teach it back"). */
+  aside?: ReactNode;
 }) {
+  const wide = useIsWide();
   const osReduced = usePrefersReducedMotion();
   const reduced = reducedMotionSetting || osReduced;
   const capId = useId();
@@ -241,86 +248,159 @@ export default function VisualExplainerPlayer({
   };
 
   const total = scenes.reduce((a, s) => a + s.duration_ms, 0);
-  const elapsed = scenes.slice(0, index).reduce((a, s) => a + s.duration_ms, 0) + Math.min(t, scene.duration_ms);
+  const elapsed = finished ? total : scenes.slice(0, index).reduce((a, s) => a + s.duration_ms, 0) + Math.min(t, scene.duration_ms);
 
+  /** Jump to a chapter. In the animated player it starts playing from there. */
+  const jump = (i: number) => {
+    if (reduced) return goSlide(i);
+    stop();
+    spokenKey.current = "";
+    if (startedAt.current === null) startedAt.current = Date.now();
+    live.current = { ...live.current, index: i, t: 0 };
+    setIndex(i);
+    setT(0);
+    setFinished(false);
+    setPlaying(true);
+  };
+
+  const square = "flex h-14 w-14 shrink-0 items-center justify-center rounded-[20px] border bg-white";
   const ttsButton = ttsSupported && (
     <button
       type="button"
       onClick={toggleTts}
       aria-pressed={tts}
       aria-label={tts ? "Turn read-aloud off" : "Turn read-aloud on"}
-      className={`flex h-11 w-11 items-center justify-center rounded-full border-2 ${tts ? "border-sage bg-sage-light text-sage-dark" : "border-line bg-white text-soft"}`}
+      className={`${square} lg:order-4 ${tts ? "border-sage bg-sage-light text-sage-dark" : "border-line text-ink"}`}
     >
-      {tts ? <Volume2 size={20} /> : <VolumeX size={20} />}
+      {tts ? <Volume2 size={24} /> : <VolumeX size={24} />}
     </button>
+  );
+
+  // One segment per scene, so she can see how far through the idea she is.
+  const progress = (
+    <div
+      role="progressbar"
+      aria-label="Progress through the idea"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round((elapsed / total) * 100)}
+      className="order-first flex w-full gap-1.5 lg:order-3 lg:w-auto lg:flex-1 lg:gap-2"
+    >
+      {scenes.map((sc, i) => {
+        const f = reduced ? (i <= index ? 1 : 0) : finished || i < index ? 1 : i === index ? Math.min(1, t / sc.duration_ms) : 0;
+        return (
+          <span key={sc.id} className="h-2 flex-1 overflow-hidden rounded-full bg-[#D8D2C6] lg:h-2.5">
+            <span className="block h-full rounded-full bg-sage" style={{ width: `${f * 100}%` }} />
+          </span>
+        );
+      })}
+    </div>
+  );
+
+  const header = (
+    <div className="flex items-end justify-between gap-3">
+      <h2 className="text-xl font-black leading-tight text-ink lg:text-[26px]">{scene.title || explainer.title}</h2>
+      <span className="shrink-0 pb-0.5 text-sm font-extrabold text-soft">
+        {index + 1} of {scenes.length}
+      </span>
+    </div>
+  );
+
+  const chapters = (
+    <aside className="hidden w-[276px] shrink-0 flex-col gap-4 lg:flex">
+      <section className="flex-1 rounded-[28px] border border-line bg-white p-5">
+        <h3 className="text-lg font-black">In this idea</h3>
+        <ol className="mt-3 space-y-2">
+          {scenes.map((sc, i) => {
+            const done = finished || i < index;
+            const current = i === index && !finished;
+            return (
+              <li key={sc.id}>
+                <button
+                  type="button"
+                  onClick={() => jump(i)}
+                  aria-current={current ? "step" : undefined}
+                  className={`flex min-h-[64px] w-full items-center gap-3 rounded-[18px] px-3 py-2 text-left ${current ? "border-2 border-sage bg-sage-light" : "border-2 border-transparent bg-cream"}`}
+                >
+                  <span
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[15px] font-black ${
+                      done ? "bg-sage text-white" : current ? "bg-white text-sage-dark" : "border-2 border-[#D8D2C6] bg-white text-soft"
+                    }`}
+                  >
+                    {done ? <Check size={16} strokeWidth={3.2} aria-label="watched" /> : i + 1}
+                  </span>
+                  <span className={`text-base leading-tight ${current ? "font-black" : "font-extrabold"}`}>{sc.title || `Part ${i + 1}`}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+      {aside}
+    </aside>
   );
 
   // ---------- Reduced motion: StepThroughSlides ----------
   if (reduced) {
     return (
-      <div className="space-y-3" data-testid="step-through">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-ink">{scene.title || explainer.title}</h2>
-          <span className="text-sm text-soft">
-            {index + 1} of {scenes.length}
-          </span>
+      <div className="lg:flex lg:gap-6" data-testid="step-through">
+        <div className="min-w-0 flex-1 space-y-4">
+          {header}
+          <VisualSceneRenderer scene={scene} t={Infinity} staticMode portrait={!wide} sceneIndex={index} describedBy={capId} />
+          <CaptionBar id={capId} text={cap.onScreen} />
+          <div className="flex flex-wrap items-center gap-3">
+            {progress}
+            <button type="button" onClick={() => goSlide(index - 1)} disabled={index === 0} className="btn-secondary !min-h-[56px] flex-1 disabled:opacity-40 lg:order-1 lg:flex-none lg:px-8">
+              <ChevronLeft size={20} /> Back
+            </button>
+            {ttsButton}
+            <button type="button" onClick={() => goSlide(index + 1)} disabled={index === scenes.length - 1} className="btn-primary !min-h-[56px] flex-1 disabled:opacity-40 lg:order-5 lg:flex-none lg:px-8">
+              Next <ChevronRight size={20} />
+            </button>
+          </div>
+          <p className="text-center text-xs text-soft lg:text-left">Reduce motion is on, so this idea is shown as still pictures.</p>
         </div>
-        <VisualSceneRenderer scene={scene} t={Infinity} staticMode describedBy={capId} />
-        <CaptionBar id={capId} text={cap.onScreen} />
-        <Dots count={scenes.length} index={index} />
-        <div className="flex items-center gap-3">
-          <button type="button" onClick={() => goSlide(index - 1)} disabled={index === 0} className="btn-secondary flex-1 disabled:opacity-40">
-            <ChevronLeft size={20} /> Back
-          </button>
-          {ttsButton}
-          <button type="button" onClick={() => goSlide(index + 1)} disabled={index === scenes.length - 1} className="btn-primary flex-1 disabled:opacity-40">
-            Next <ChevronRight size={20} />
-          </button>
-        </div>
-        <p className="text-center text-xs text-soft">Reduce motion is on, so this idea is shown as still pictures.</p>
+        {chapters}
       </div>
     );
   }
 
   // ---------- Animated path ----------
   return (
-    <div className="space-y-3" data-testid="animated-player">
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="text-lg font-bold text-ink">{scene.title || explainer.title}</h2>
-        <span className="shrink-0 text-sm text-soft">
-          {index + 1} of {scenes.length}
-        </span>
-      </div>
-      <div className="relative">
-        <VisualSceneRenderer scene={scene} t={t} speed={speed} describedBy={capId} />
-        {!playing && startedAt.current === null && (
+    <div className="lg:flex lg:gap-6" data-testid="animated-player">
+      <div className="min-w-0 flex-1 space-y-4">
+        {header}
+        <div className="relative">
+          <VisualSceneRenderer scene={scene} t={t} speed={speed} portrait={!wide} sceneIndex={index} describedBy={capId} />
+          {!playing && startedAt.current === null && (
+            <button type="button" onClick={playPause} aria-label="Play" className="absolute inset-0 flex items-center justify-center rounded-[32px] bg-cream/60">
+              <span className="flex h-24 w-24 items-center justify-center rounded-[32px] bg-sage text-white shadow-card">
+                <Play size={40} fill="currentColor" className="ml-1" />
+              </span>
+            </button>
+          )}
+        </div>
+        <CaptionBar id={capId} text={cap.onScreen} />
+        <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-3 md:gap-x-3">
+          {progress}
+          <button type="button" onClick={replay} aria-label="Replay from the start" className={`${square} border-line text-ink lg:order-2`}>
+            <RotateCcw size={24} />
+          </button>
+          {ttsButton}
           <button
             type="button"
             onClick={playPause}
-            aria-label="Play"
-            className="absolute inset-0 flex items-center justify-center rounded-3xl bg-cream/70"
+            aria-label={playing ? "Pause" : finished ? "Watch again" : "Play"}
+            className="flex h-[72px] w-[76px] shrink-0 items-center justify-center rounded-[26px] bg-sage text-white active:bg-sage-dark md:w-[84px] lg:order-1 lg:w-24"
           >
-            <span className="flex h-20 w-20 items-center justify-center rounded-full bg-sage text-white shadow-card">
-              <Play size={36} className="ml-1" />
-            </span>
+            {playing ? <Pause size={30} fill="currentColor" /> : finished ? <RotateCcw size={30} /> : <Play size={30} fill="currentColor" className="ml-0.5" />}
           </button>
-        )}
+          <div className="lg:order-5">
+            <SpeedPicker speed={speed} onChange={setSpeed} />
+          </div>
+        </div>
       </div>
-      <CaptionBar id={capId} text={cap.onScreen} />
-      <div className="h-2 overflow-hidden rounded-full bg-line" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round((elapsed / total) * 100)}>
-        <div className="h-full rounded-full bg-sage" style={{ width: `${(elapsed / total) * 100}%` }} />
-      </div>
-      <div className="flex items-center justify-between gap-2">
-        <button type="button" onClick={playPause} className="btn-primary min-w-[7.5rem]" aria-label={playing ? "Pause" : finished ? "Watch again" : "Play"}>
-          {playing ? <Pause size={20} /> : finished ? <RotateCcw size={20} /> : <Play size={20} />}
-          {playing ? "Pause" : finished ? "Again" : "Play"}
-        </button>
-        <button type="button" onClick={replay} aria-label="Replay from the start" className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-line bg-white text-soft">
-          <RotateCcw size={20} />
-        </button>
-        {ttsButton}
-        <SpeedPicker speed={speed} onChange={setSpeed} />
-      </div>
+      {chapters}
     </div>
   );
 }

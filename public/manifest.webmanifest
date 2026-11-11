@@ -4,8 +4,8 @@
   "description": "A calm 15-minute study routine.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FAF7F2",
-  "theme_color": "#FAF7F2",
+  "background_color": "#F7F4EE",
+  "theme_color": "#F7F4EE",
   "lang": "en",
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },

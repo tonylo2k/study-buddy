@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { ArrowLeftRight, Check } from "lucide-react";
 import { useRef, useState } from "react";
 import { IconView } from "@/lib/icons";
 import type { Diagram, PictureRef } from "@/lib/types";
@@ -73,15 +74,15 @@ export default function ArrangeBoard({
         }}
         aria-pressed={isSel}
         aria-label={`${t.caption || t.icon_id || "picture"}${value[t.id] ? ", placed. Tap to take it back" : ""}`}
-        className={`relative flex w-[7rem] max-w-full touch-none flex-col items-center gap-1 rounded-2xl border-2 bg-white px-2 py-2 text-center text-xs font-semibold leading-tight text-ink shadow-card ${
+        className={`relative flex min-h-[5.5rem] w-[7rem] max-w-full touch-none flex-col items-center justify-center gap-1.5 rounded-[18px] border-2 bg-white px-2 py-2 text-center text-[13px] font-extrabold leading-tight text-ink shadow-card md:min-h-[7rem] md:w-[10.5rem] md:gap-2 md:text-base ${
           mark === true ? "border-sage" : mark === false ? "border-gold" : isSel ? "border-sage ring-4 ring-sage-light" : "border-line"
         }`}
       >
         {diagrams?.[t.id] ? <MiniDiagram diagram={diagrams[t.id]} width={96} /> : <IconView iconId={t.icon_id} emoji={t.emoji} label={t.caption} size={34} />}
         <span>{t.caption}</span>
         {mark !== undefined && (
-          <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-white text-sm shadow-card" aria-hidden>
-            {mark ? "✅" : "↔️"}
+          <span className={`absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full text-white shadow-card ${mark ? "bg-sage" : "bg-[#B9783F]"}`} aria-hidden>
+            {mark ? <Check size={16} strokeWidth={3.2} /> : <ArrowLeftRight size={15} strokeWidth={2.8} />}
           </span>
         )}
       </motion.button>
@@ -91,15 +92,15 @@ export default function ArrangeBoard({
   const tray = tokens.filter((t) => !value[t.id]);
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-3">
       <div
         data-slot-id=""
-        className="flex min-h-[6.5rem] flex-wrap items-start justify-center gap-2 rounded-2xl border-2 border-dashed border-line bg-cream p-3"
+        className="order-2 flex min-h-[6.75rem] flex-wrap items-center justify-center gap-2.5 rounded-[22px] bg-cream p-3 md:min-h-[8.5rem] md:gap-3.5"
         aria-label="Pictures to place"
       >
-        {tray.length === 0 ? <p className="self-center text-sm text-soft">All placed. Tap a picture to move it.</p> : tray.map(renderToken)}
+        {tray.length === 0 ? <p className="self-center text-sm font-semibold text-soft">All placed. Tap a picture to move it.</p> : tray.map(renderToken)}
       </div>
-      <div className={`grid gap-3 ${slots.length === 2 ? "grid-cols-2" : slots.length === 3 ? "grid-cols-3" : "grid-cols-2"}`}>
+      <div className={`grid gap-2 md:gap-3.5 ${slots.length === 2 ? "grid-cols-2" : slots.length === 3 ? "grid-cols-3" : "grid-cols-2"}`}>
         {slots.map((s) => (
           <div
             key={s.id}
@@ -114,16 +115,16 @@ export default function ArrangeBoard({
               }
             }}
             aria-label={`Area: ${s.label}${selected ? ". Tap to place the picture here" : ""}`}
-            className={`flex min-h-[9rem] flex-col items-center gap-2 rounded-2xl border-2 p-2 ${selected ? "border-sage bg-sage-light" : "border-line bg-white"}`}
+            className={`flex min-h-[8.5rem] flex-col items-center gap-2 rounded-[22px] border-2 p-2 md:min-h-[10.5rem] md:rounded-[26px] md:p-3 ${tokens.some((t) => value[t.id] === s.id) ? "border-sage bg-sage-light" : selected ? "border-dashed border-sage bg-sage-light/50" : "border-dashed border-[#B9B2A4] bg-cream"}`}
           >
-            <span className="chip pointer-events-none">{s.label}</span>
+            <span className="pointer-events-none text-center text-[13px] font-black leading-tight text-sage-dark md:text-base">{s.label}</span>
             <span className="flex w-full flex-wrap justify-center gap-2" data-slot-id={s.id}>
               {tokens.filter((t) => value[t.id] === s.id).map(renderToken)}
             </span>
           </div>
         ))}
       </div>
-      {!locked && <p className="text-center text-xs text-soft">Drag a picture, or tap it and then tap where it goes.</p>}
+      {!locked && <p className="order-3 text-center text-[13px] font-bold text-soft">Tap a picture, then tap where it goes. Or drag it.</p>}
     </div>
   );
 }

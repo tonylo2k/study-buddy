@@ -1,4 +1,5 @@
 "use client";
+import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { isCorrect } from "@/lib/answers";
@@ -84,7 +85,7 @@ export default function QuizRun({ pack }: { pack: LessonPack }) {
             ? "We will visit this lesson again tomorrow. Some ideas need one more visit, and that is normal."
             : `This one was extra practice.${due ? ` Your next review comes ${friendlyDay(due)}.` : ""}`;
     return (
-      <DoneCard emoji="✏️" title="Quiz finished. You answered every question." lines={[line, `You got ${summary.score} of ${questions.length} this time.`]}>
+      <DoneCard icon={Pencil} title="Quiz finished. You answered every question." lines={[line, `You got ${summary.score} of ${questions.length} this time.`]}>
         <Link className="btn-primary" href="/">
           Back to Today
         </Link>

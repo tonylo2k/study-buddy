@@ -3,7 +3,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import GeneratePanel from "@/components/GeneratePanel";
-import { EmptyState, Loading, PageHeader } from "@/components/ui";
+import { Search } from "lucide-react";
+import { ACTIVITY_ICON, EmptyState, IconTile, Loading, PageHeader } from "@/components/ui";
 import { usePack } from "@/lib/db";
 import { missingKinds } from "@/lib/generate";
 import { ACTIVITY_META, activityHref, hasActivity, type ActivityKind } from "@/lib/plan";
@@ -21,7 +22,7 @@ function PackInner() {
   if (pack === undefined) return <Loading />;
   if (!pack)
     return (
-      <EmptyState emoji="🔎" title="That lesson is not here">
+      <EmptyState icon={Search} title="That lesson is not here">
         <Link href="/practice" className="btn-primary">
           See all lessons
         </Link>
@@ -40,27 +41,25 @@ function PackInner() {
         {isDue(pack) ? <span className="chip !bg-gold-light !text-ink">Review due today</span> : due ? <span>Next review {friendlyDay(due)}</span> : <span>All three reviews done</span>}
       </div>
 
-      <ul className="grid grid-cols-2 gap-3">
+      <ul className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {ORDER.map((kind, n) => {
           const meta = ACTIVITY_META[kind];
           const ok = hasActivity(pack, kind);
           const inner = (
             <>
-              <span className="text-3xl" aria-hidden>
-                {meta.emoji}
-              </span>
-              <span className="font-bold">{meta.label}</span>
-              <span className="text-xs text-soft">{ok ? `about ${meta.minutes} min` : "not made yet"}</span>
+              <IconTile icon={ACTIVITY_ICON[kind]} size={n === 0 ? 56 : 48} tone={n === 0 ? "sage" : "sand"} />
+              <span className="text-[17px] font-extrabold">{meta.label}</span>
+              <span className="text-sm font-semibold text-soft">{ok ? `about ${meta.minutes} min` : "not made yet"}</span>
             </>
           );
           return (
-            <li key={kind} className={n === 0 ? "col-span-2" : ""}>
+            <li key={kind} className={n === 0 ? "col-span-2 md:col-span-4" : ""}>
               {ok ? (
-                <Link href={activityHref(pack.id, kind)} className={`card flex min-h-[7rem] flex-col items-center justify-center gap-1 text-center ${n === 0 ? "!border-sage !bg-sage-light" : ""}`}>
+                <Link href={activityHref(pack.id, kind)} className={`card flex min-h-[8rem] flex-col items-center justify-center gap-1.5 text-center ${n === 0 ? "!border-2 !border-sage" : ""}`}>
                   {inner}
                 </Link>
               ) : (
-                <div className="card flex min-h-[7rem] flex-col items-center justify-center gap-1 text-center opacity-50" aria-disabled>
+                <div className="card flex min-h-[8rem] flex-col items-center justify-center gap-1.5 text-center opacity-50" aria-disabled>
                   {inner}
                 </div>
               )}

@@ -1,6 +1,6 @@
 "use client";
 import { apiFetch } from "@/lib/api";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { db, uid } from "@/lib/db";
 import { IconView } from "@/lib/icons";
 import { TAXONOMY } from "@/lib/taxonomy";
@@ -23,13 +23,16 @@ export default function MistakeTagger({
   onTagged?: (taxonomyId: string) => void;
 }) {
   const [picked, setPicked] = useState<string | null>(null);
+  const saving = useRef(false);
   const [hint, setHint] = useState<string | null>(null);
   const [hintState, setHintState] = useState<"idle" | "loading" | "none">("idle");
 
   const tag = async (taxonomyId: string) => {
-    if (picked) return;
-    setPicked(taxonomyId);
+    if (picked || saving.current) return;
+    saving.current = true;
+    // Save first, then show "Noted", so the tag is never shown without being stored.
     await db.mistakes.add({ id: uid(), attemptId, packId, itemId, taxonomyId, createdAt: new Date().toISOString() });
+    setPicked(taxonomyId);
     onTagged?.(taxonomyId);
   };
 
